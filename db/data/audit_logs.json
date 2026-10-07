@@ -154,5 +154,77 @@
     "ipAddress": "::ffff:127.0.0.1",
     "createdAt": "2026-10-07T11:00:33.000Z",
     "updatedAt": "2026-10-07T11:00:33.000Z"
+  },
+  {
+    "logId": "AUD-00014",
+    "userId": "USR-2026-0003",
+    "userName": "Juan Dita",
+    "action": "USER_LOGIN",
+    "targetType": "User",
+    "targetId": "USR-2026-0003",
+    "details": "User borrower@basco.gov.ph logged in",
+    "ipAddress": "::1",
+    "createdAt": "2026-10-07T11:37:34.423Z",
+    "updatedAt": "2026-10-07T11:37:34.423Z"
+  },
+  {
+    "logId": "AUD-00015",
+    "userId": "USR-2026-0003",
+    "userName": "Juan Dita",
+    "action": "RESERVATION_CREATE",
+    "targetType": "Reservation",
+    "targetId": "RES-2026-0004",
+    "details": "User USR-2026-0003 reserved Kubota 7HP Hand Tractor / Power Tiller from 2026-10-08 to 2026-10-10",
+    "ipAddress": "::1",
+    "createdAt": "2026-10-07T11:39:22.336Z",
+    "updatedAt": "2026-10-07T11:39:22.336Z"
+  },
+  {
+    "logId": "AUD-00016",
+    "userId": "USR-2026-0002",
+    "userName": "Mateo Valiente",
+    "action": "USER_LOGIN",
+    "targetType": "User",
+    "targetId": "USR-2026-0002",
+    "details": "User staff@basco.gov.ph logged in",
+    "ipAddress": "::1",
+    "createdAt": "2026-10-07T11:41:37.551Z",
+    "updatedAt": "2026-10-07T11:41:37.551Z"
+  },
+  {
+    "logId": "AUD-00017",
+    "userId": "USR-2026-0002",
+    "userName": "Mateo Valiente",
+    "action": "TOOL_UPDATE",
+    "targetType": "Tool",
+    "targetId": "TL-FSH-002",
+    "details": "Updated tool Garmin Handheld Marine GPS & Fishfinder details/status",
+    "ipAddress": "::1",
+    "createdAt": "2026-10-07T11:46:21.497Z",
+    "updatedAt": "2026-10-07T11:46:21.497Z"
+  },
+  {
+    "logId": "AUD-00018",
+    "userId": "USR-2026-0002",
+    "userName": "Mateo Valiente",
+    "action": "TOOL_UPDATE",
+    "targetType": "Tool",
+    "targetId": "TL-FSH-002",
+    "details": "Updated tool Garmin Handheld Marine GPS & Fishfinder details/status",
+    "ipAddress": "::1",
+    "createdAt": "2026-10-07T11:46:30.417Z",
+    "updatedAt": "2026-10-07T11:46:30.417Z"
+  },
+  {
+    "logId": "AUD-00019",
+    "userId": "USR-2026-0001",
+    "userName": "Althea Abad",
+    "action": "USER_LOGIN",
+    "targetType": "User",
+    "targetId": "USR-2026-0001",
+    "details": "User admin@basco.gov.ph logged in",
+    "ipAddress": "::1",
+    "createdAt": "2026-10-07T11:51:24.454Z",
+    "updatedAt": "2026-10-07T11:51:24.454Z"
   }
 ]

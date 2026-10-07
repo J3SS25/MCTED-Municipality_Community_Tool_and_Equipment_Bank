@@ -108,5 +108,27 @@
     "isRead": false,
     "createdAt": "2026-10-07T11:00:32.970Z",
     "updatedAt": "2026-10-07T11:00:32.970Z"
+  },
+  {
+    "notificationId": "NOTIF-00011",
+    "userId": "ALL",
+    "title": "New Equipment Reservation Request",
+    "message": "Juan Dita submitted a reservation for \"Kubota 7HP Hand Tractor / Power Tiller\" (2026-10-08 to 2026-10-10).",
+    "type": "info",
+    "link": "/reservations?id=RES-2026-0004",
+    "isRead": false,
+    "createdAt": "2026-10-07T11:39:22.325Z",
+    "updatedAt": "2026-10-07T11:39:22.325Z"
+  },
+  {
+    "notificationId": "NOTIF-00012",
+    "userId": "USR-2026-0003",
+    "title": "Reservation Request Submitted",
+    "message": "Your reservation request (RES-2026-0004) for \"Kubota 7HP Hand Tractor / Power Tiller\" has been submitted for Municipal Staff review.",
+    "type": "info",
+    "link": "",
+    "isRead": false,
+    "createdAt": "2026-10-07T11:39:22.331Z",
+    "updatedAt": "2026-10-07T11:39:22.331Z"
   }
 ]

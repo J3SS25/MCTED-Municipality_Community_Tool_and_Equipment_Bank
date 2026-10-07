@@ -18,7 +18,7 @@
     "failedLoginAttempts": 0,
     "lockedUntil": null,
     "createdAt": "2026-01-10T08:00:00.000Z",
-    "updatedAt": "2026-10-07T11:00:32.658Z"
+    "updatedAt": "2026-10-07T11:51:24.451Z"
   },
   {
     "userId": "USR-2026-0002",
@@ -39,7 +39,7 @@
     "failedLoginAttempts": 0,
     "lockedUntil": null,
     "createdAt": "2026-01-15T09:30:00.000Z",
-    "updatedAt": "2026-10-07T11:00:32.917Z"
+    "updatedAt": "2026-10-07T11:41:37.548Z"
   },
   {
     "userId": "USR-2026-0003",
@@ -60,7 +60,7 @@
     "failedLoginAttempts": 0,
     "lockedUntil": null,
     "createdAt": "2026-02-01T10:00:00.000Z",
-    "updatedAt": "2026-10-07T11:00:32.829Z"
+    "updatedAt": "2026-10-07T11:37:34.419Z"
   },
   {
     "userId": "USR-2026-0004",
