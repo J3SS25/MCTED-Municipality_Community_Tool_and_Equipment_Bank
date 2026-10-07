@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Official Electronic Receipt - Municipality of Basco, Batanes</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <style>
+    body {
+      background-color: #f1f5f9;
+      padding: 2rem 1rem;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+    }
+    .receipt-container {
+      background: #ffffff;
+      max-width: 680px;
+      width: 100%;
+      border: 2px solid #0f2d1d;
+      border-radius: 8px;
+      padding: 2.5rem 2rem;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+      position: relative;
+    }
+    .receipt-header-crest {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1.5rem;
+      margin-bottom: 1.25rem;
+      border-bottom: 2px solid #0f2d1d;
+      padding-bottom: 1rem;
+      text-align: center;
+    }
+    .receipt-header-crest img {
+      width: 70px;
+      height: 70px;
+    }
+    .receipt-header-text h5 {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #334155;
+      margin: 0;
+    }
+    .receipt-header-text h3 {
+      font-size: 1.3rem;
+      font-weight: 800;
+      color: #15432a;
+      margin: 0.1rem 0;
+    }
+    .receipt-header-text p {
+      font-size: 0.75rem;
+      color: #64748b;
+      margin: 0;
+    }
+    .receipt-number-badge {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: #ecfdf5;
+      border: 1px solid #a7f3d0;
+      padding: 0.6rem 1rem;
+      border-radius: 6px;
+      margin-bottom: 1.5rem;
+    }
+    .receipt-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1.25rem 0;
+    }
+    .receipt-table th {
+      background-color: #f8fafc;
+      border-top: 1px solid #cbd5e1;
+      border-bottom: 1px solid #cbd5e1;
+      padding: 0.6rem 0.75rem;
+      font-size: 0.8rem;
+      text-align: left;
+      text-transform: uppercase;
+    }
+    .receipt-table td {
+      padding: 0.75rem;
+      border-bottom: 1px solid #e2e8f0;
+      font-size: 0.85rem;
+    }
+    .receipt-stamp-watermark {
+      position: absolute;
+      right: 2rem;
+      bottom: 6rem;
+      border: 3px solid #16a34a;
+      color: #16a34a;
+      padding: 0.4rem 1.2rem;
+      font-size: 1.2rem;
+      font-weight: 900;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      border-radius: 6px;
+      transform: rotate(-10deg);
+      opacity: 0.85;
+      pointer-events: none;
+    }
+    .actions-bar {
+      margin-top: 1.5rem;
+      display: flex;
+      justify-content: space-between;
+    }
+  </style>
+</head>
+<body>
+  <div class="receipt-container" id="receipt-container">
+    <div class="receipt-header-crest">
+      <img src="/images/logo.svg" alt="Basco MCTEB Seal">
+      <div class="receipt-header-text">
+        <h5>Republic of the Philippines &bull; Province of Batanes</h5>
+        <h3>MUNICIPALITY OF BASCO</h3>
+        <p>Municipal Community Tool &amp; Equipment Bank (MCTEB)</p>
+        <p>Official Electronic Rental &amp; Service Receipt</p>
+      </div>
+    </div>
+
+    <div class="receipt-number-badge">
+      <div>
+        <span style="font-size: 0.75rem; color: #64748b;">OFFICIAL RECEIPT NO:</span>
+        <h4 id="receipt-no" style="font-size: 1.1rem; color: #15432a; margin: 0;">OR-2026-XXXXXX</h4>
+      </div>
+      <div style="text-align: right;">
+        <span style="font-size: 0.75rem; color: #64748b;">ISSUANCE DATE:</span>
+        <div id="receipt-date" style="font-size: 0.85rem; font-weight: 600;">October 7, 2026</div>
+      </div>
+    </div>
+
+    <div class="receipt-grid">
+      <div>
+        <strong>PAYOR / BORROWER:</strong><br>
+        <span id="payer-name" style="font-size: 0.95rem; font-weight: 700;">Juan Dita</span><br>
+        <span id="payer-id" style="color: #64748b;">ID: USR-2026-0003</span><br>
+        <span id="payer-address">Ihuvok II (Kayvaluganan), Basco, Batanes</span><br>
+        <span id="payer-contact">09205551234</span>
+      </div>
+      <div>
+        <strong>TRANSACTION REFERENCE:</strong><br>
+        <strong>Payment Method:</strong> <span id="payment-method">GCash</span><br>
+        <strong>Reference No:</strong> <span id="payment-ref">GCASH-9823148190</span><br>
+        <strong>Transaction ID:</strong> <span id="payment-id">PAY-2026-0001</span><br>
+        <strong>Status:</strong> <span class="badge badge-paid" id="payment-status">PAID</span>
+      </div>
+    </div>
+
+    <table class="receipt-table">
+      <thead>
+        <tr>
+          <th>Particulars / Equipment Description</th>
+          <th>Period</th>
+          <th>Rate</th>
+          <th style="text-align: right;">Total (PHP)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            <strong id="tool-name">Kubota 7HP Hand Tractor / Power Tiller</strong><br>
+            <small style="color: #64748b;" id="tool-cat">Category: Agricultural Tools &bull; ID: TL-AGR-001</small>
+          </td>
+          <td id="rental-period">2 Days</td>
+          <td id="tool-rate">₱150.00 / day</td>
+          <td style="text-align: right; font-weight: 700;" id="amount-row">₱300.00</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="receipt-total-row">
+      <span>TOTAL AMOUNT PAID:</span>
+      <span id="total-amount">₱300.00</span>
+    </div>
+
+    <p style="font-size: 0.75rem; color: #64748b; margin-bottom: 2rem;">
+      <strong>Note:</strong> This is a valid electronic receipt generated by the Basco Municipal Community Tool and Equipment Bank. Equipment must be operated with safety gear and returned on or before due date in operational condition.
+    </p>
+
+    <div class="receipt-stamp-watermark">
+      OFFICIAL PAYMENT VERIFIED
+    </div>
+
+    <div style="display: flex; justify-content: space-between; border-top: 1px solid #cbd5e1; padding-top: 1rem; font-size: 0.8rem;">
+      <div>
+        <small style="color: #64748b;">Verified &amp; Issued by:</small><br>
+        <strong id="verified-by">Office of the Municipal Treasurer / Staff</strong>
+      </div>
+      <div style="text-align: right;">
+        <small style="color: #64748b;">MCTEB System Seal</small><br>
+        <span style="font-weight: 600; color: #15432a;">Municipality of Basco, Batanes</span>
+      </div>
+    </div>
+
+    <div class="actions-bar no-print">
+      <a href="/" class="btn btn-outline btn-sm">&larr; Back to Mainframe</a>
+      <button onclick="window.print()" class="btn btn-primary btn-sm">🖨️ Print Official Receipt</button>
+    </div>
+  </div>
+
+  <script src="/js/api.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const receiptId = urlParams.get('id') || 'OR-2026-451208';
+      
+      try {
+        const res = await API.getReceipt(receiptId);
+        if (res.success && res.receipt) {
+          const r = res.receipt;
+          document.getElementById('receipt-no').textContent = r.receiptId;
+          document.getElementById('receipt-date').textContent = new Date(r.transaction.paymentDate).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+          document.getElementById('payer-name').textContent = r.payer.name;
+          document.getElementById('payer-id').textContent = `ID: ${r.payer.userId}`;
+          document.getElementById('payer-address').textContent = r.payer.address || `Brgy. ${r.payer.barangay}, Basco, Batanes`;
+          document.getElementById('payer-contact').textContent = r.payer.contactNumber;
+          document.getElementById('payment-method').textContent = r.transaction.paymentMethod;
+          document.getElementById('payment-ref').textContent = r.transaction.referenceNumber;
+          document.getElementById('payment-id').textContent = r.paymentId;
+          document.getElementById('tool-name').textContent = r.equipment.toolName;
+          document.getElementById('tool-cat').textContent = `Category: ${r.equipment.category} • ID: ${r.equipment.toolId}`;
+          document.getElementById('tool-rate').textContent = `₱${parseFloat(r.equipment.rentalFee).toFixed(2)}`;
+          
+          if (r.reservation) {
+            document.getElementById('rental-period').textContent = `${r.reservation.pickupDate} to ${r.reservation.returnDate}`;
+          } else {
+            document.getElementById('rental-period').textContent = 'Standard Rental';
+          }
+
+          document.getElementById('amount-row').textContent = `₱${parseFloat(r.transaction.amountPaid).toFixed(2)}`;
+          document.getElementById('total-amount').textContent = `₱${parseFloat(r.transaction.amountPaid).toFixed(2)}`;
+          document.getElementById('verified-by').textContent = r.transaction.verifiedBy || 'Municipal Staff / System';
+        }
+      } catch (err) {
+        console.error('Error fetching receipt:', err);
+      }
+    });
+  </script>
+</body>
+</html>

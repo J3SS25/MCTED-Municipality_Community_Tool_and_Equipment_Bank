@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 200" width="100%" height="100%">
+  <rect width="300" height="200" fill="#f0f9ff" rx="8"/>
+  <rect x="10" y="10" width="280" height="180" fill="#ffffff" stroke="#bae6fd" stroke-width="1.5" rx="6"/>
+  <g transform="translate(150, 95)">
+    <!-- Antenna Stub -->
+    <rect x="15" y="-70" width="12" height="20" rx="4" fill="#334155"/>
+    <!-- Body -->
+    <rect x="-40" y="-55" width="80" height="110" rx="14" fill="#334155" stroke="#1e293b" stroke-width="2"/>
+    <!-- Screen -->
+    <rect x="-30" y="-45" width="60" height="55" rx="4" fill="#0f766e" stroke="#115e59" stroke-width="1.5"/>
+    <!-- Map Waypoints / Crosshair on Screen -->
+    <circle cx="0" cy="-18" r="14" fill="none" stroke="#5eead4" stroke-width="1.5" stroke-dasharray="2,2"/>
+    <circle cx="0" cy="-18" r="3" fill="#fbbf24"/>
+    <line x1="-12" y1="-18" x2="12" y2="-18" stroke="#5eead4" stroke-width="1"/>
+    <line x1="0" y1="-30" x2="0" y2="-6" stroke="#5eead4" stroke-width="1"/>
+    <!-- Buttons -->
+    <circle cx="0" cy="25" r="10" fill="#64748b"/>
+    <rect x="-25" y="18" width="12" height="6" rx="2" fill="#94a3b8"/>
+    <rect x="13" y="18" width="12" height="6" rx="2" fill="#94a3b8"/>
+    <rect x="-25" y="28" width="12" height="6" rx="2" fill="#94a3b8"/>
+    <rect x="13" y="28" width="12" height="6" rx="2" fill="#94a3b8"/>
+  </g>
+  <text x="150" y="180" font-family="system-ui, sans-serif" font-size="11" font-weight="600" fill="#0369a1" text-anchor="middle">Garmin Marine GPS &amp; Fishfinder</text>
+</svg>

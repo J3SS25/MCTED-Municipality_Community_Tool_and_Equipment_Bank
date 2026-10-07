@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 200" width="100%" height="100%">
+  <rect width="300" height="200" fill="#fefce8" rx="8"/>
+  <rect x="10" y="10" width="280" height="180" fill="#ffffff" stroke="#fef08a" stroke-width="1.5" rx="6"/>
+  <g transform="translate(150, 95) rotate(-25)">
+    <!-- C-Head -->
+    <path d="M -60 -25 C -60 -45, -30 -45, -30 -25 L -30 -10 L -45 -10 L -45 -25 C -45 -35, -55 -35, -55 -25 Z" fill="#eab308" stroke="#ca8a04" stroke-width="2"/>
+    <!-- Die inside head -->
+    <rect x="-42" y="-20" width="10" height="12" fill="#334155"/>
+    <!-- Hydraulic Cylinder Body (Yellow) -->
+    <rect x="-30" y="-12" width="60" height="24" rx="4" fill="#eab308" stroke="#ca8a04" stroke-width="2"/>
+    <!-- Fixed Handle -->
+    <rect x="30" y="-6" width="65" height="12" rx="3" fill="#1e293b"/>
+    <!-- Movable Pump Handle -->
+    <path d="M 15 12 L 85 45" stroke="#1e293b" stroke-width="10" stroke-linecap="round"/>
+    <!-- Release Valve Knob -->
+    <circle cx="10" cy="-18" r="6" fill="#334155"/>
+  </g>
+  <text x="150" y="180" font-family="system-ui, sans-serif" font-size="11" font-weight="600" fill="#a16207" text-anchor="middle">Hydraulic Cable Lug Crimper (16-300mm²)</text>
+</svg>

@@ -1,0 +1,40 @@
+[
+  {
+    "rentalId": "RNT-2026-0001",
+    "reservationId": "RES-2026-0001",
+    "userId": "USR-2026-0003",
+    "toolId": "TL-AGR-002",
+    "rentalDate": "2026-09-20T08:30:00.000Z",
+    "dueDate": "2026-09-22",
+    "actualReturnDate": "2026-09-22T16:00:00.000Z",
+    "rentalStatus": "Completed",
+    "initialCondition": "Good",
+    "returnedCondition": "Good",
+    "releasedBy": "USR-2026-0002",
+    "receivedBy": "USR-2026-0002",
+    "inspectionNotes": "Returned clean with full fuel tank. Blade in good shape.",
+    "overduePenalty": 0,
+    "damagePenalty": 0,
+    "createdAt": "2026-09-20T08:30:00.000Z",
+    "updatedAt": "2026-09-22T16:00:00.000Z"
+  },
+  {
+    "rentalId": "RNT-2026-0002",
+    "reservationId": "RES-2026-0003",
+    "userId": "USR-2026-0003",
+    "toolId": "TL-CRP-001",
+    "rentalDate": "2026-10-07T11:00:32.944Z",
+    "dueDate": "2026-11-03",
+    "actualReturnDate": "2026-10-07T11:00:32.955Z",
+    "rentalStatus": "Completed",
+    "initialCondition": "Good",
+    "returnedCondition": "Good",
+    "releasedBy": "USR-2026-0002",
+    "receivedBy": "USR-2026-0002",
+    "inspectionNotes": "Saw returned clean with sharp blade",
+    "overduePenalty": 0,
+    "damagePenalty": 0,
+    "createdAt": "2026-10-07T11:00:32.944Z",
+    "updatedAt": "2026-10-07T11:00:32.955Z"
+  }
+]

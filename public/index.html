@@ -1,0 +1,1034 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MCTEB - Municipal Community Tool and Equipment Bank | Basco, Batanes</title>
+  <link rel="icon" type="image/svg+xml" href="/images/logo.svg">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <!-- AUTHENTICATION SCREEN (Shown if not logged in) -->
+  <div id="auth-screen" class="auth-wrapper" style="display: none;">
+    <div class="auth-card">
+      <div class="auth-header">
+        <img src="/images/logo.svg" alt="Basco MCTEB Seal">
+        <h2>MUNICIPALITY OF BASCO</h2>
+        <p>Community Tool &amp; Equipment Bank (MCTEB)</p>
+      </div>
+
+      <div class="auth-tabs">
+        <div class="auth-tab active" id="tab-login-btn" onclick="App.switchAuthTab('login')">Log In</div>
+        <div class="auth-tab" id="tab-register-btn" onclick="App.switchAuthTab('register')">New Registration</div>
+        <div class="auth-tab" id="tab-forgot-btn" onclick="App.switchAuthTab('forgot')">Forgot PIN</div>
+      </div>
+
+      <!-- Login Form -->
+      <form id="form-login" onsubmit="App.handleLogin(event)">
+        <div class="form-group">
+          <label class="form-label">Email Address</label>
+          <input type="email" id="login-email" class="form-control" placeholder="e.g. borrower@basco.gov.ph" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Password</label>
+          <input type="password" id="login-password" class="form-control" placeholder="••••••••" required>
+        </div>
+        <button type="submit" class="btn btn-primary btn-block" style="margin-top: 1rem;">
+          Enter MCTEB Mainframe &rarr;
+        </button>
+
+        <div style="margin-top: 1.25rem; padding-top: 1rem; border-top: 1px solid var(--border-color); font-size: 0.75rem; color: var(--text-muted);">
+          <strong>Demo Accounts:</strong><br>
+          &bull; <strong>Admin:</strong> admin@basco.gov.ph / Admin@123<br>
+          &bull; <strong>Staff:</strong> staff@basco.gov.ph / Staff@123<br>
+          &bull; <strong>Borrower:</strong> borrower@basco.gov.ph / User@123
+        </div>
+      </form>
+
+      <!-- Registration Form -->
+      <form id="form-register" style="display: none;" onsubmit="App.handleRegister(event)">
+        <div class="form-grid-2">
+          <div class="form-group">
+            <label class="form-label">First Name *</label>
+            <input type="text" id="reg-firstName" class="form-control" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Middle Name</label>
+            <input type="text" id="reg-middleName" class="form-control">
+          </div>
+        </div>
+
+        <div class="form-grid-2">
+          <div class="form-group">
+            <label class="form-label">Last Name *</label>
+            <input type="text" id="reg-lastName" class="form-control" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Birthday *</label>
+            <input type="date" id="reg-birthday" class="form-control" required>
+          </div>
+        </div>
+
+        <div class="form-grid-2">
+          <div class="form-group">
+            <label class="form-label">Contact Number (PH) *</label>
+            <input type="tel" id="reg-contact" class="form-control" placeholder="09XXXXXXXXX" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Basco Barangay *</label>
+            <select id="reg-barangay" class="form-select" required>
+              <option value="">Select Barangay...</option>
+              <option value="Ihuvok I (Kaychanarianan)">Ihuvok I (Kaychanarianan)</option>
+              <option value="Ihuvok II (Kayvaluganan)">Ihuvok II (Kayvaluganan)</option>
+              <option value="San Antonio">San Antonio</option>
+              <option value="San Joaquin">San Joaquin</option>
+              <option value="Chanarian">Chanarian</option>
+              <option value="Kayhuvokan">Kayhuvokan</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-grid-2">
+          <div class="form-group">
+            <label class="form-label">House No. *</label>
+            <input type="text" id="reg-houseNo" class="form-control" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Street Address *</label>
+            <input type="text" id="reg-street" class="form-control" required>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Email Address *</label>
+          <input type="email" id="reg-email" class="form-control" required>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Password *</label>
+          <input type="password" id="reg-password" class="form-control" minlength="6" required>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Account Role</label>
+          <select id="reg-role" class="form-select" onchange="App.togglePasscodeField(this.value)">
+            <option value="Borrower">Resident / Borrower</option>
+            <option value="Municipal Staff">Municipal Staff (Requires Key)</option>
+            <option value="Administrator">Administrator (Requires Key)</option>
+          </select>
+        </div>
+
+        <div class="form-group" id="passcode-wrap" style="display: none;">
+          <label class="form-label">Admin / Staff Passcode</label>
+          <input type="password" id="reg-passcode" class="form-control" placeholder="Enter authorization key">
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-block" style="margin-top: 1rem;">
+          Complete Registration &rarr;
+        </button>
+      </form>
+
+      <!-- Forgot Password Form -->
+      <form id="form-forgot" style="display: none;" onsubmit="App.handleForgotPassword(event)">
+        <div class="form-group">
+          <label class="form-label">Registered Email</label>
+          <input type="email" id="forgot-email" class="form-control" placeholder="user@basco.gov.ph" required>
+        </div>
+        <div class="form-group" id="forgot-pin-wrap" style="display: none;">
+          <label class="form-label">Security PIN (Last 4 digits of contact number)</label>
+          <input type="text" id="forgot-pin" class="form-control" placeholder="e.g. 1234">
+        </div>
+        <div class="form-group" id="forgot-pass-wrap" style="display: none;">
+          <label class="form-label">New Password</label>
+          <input type="password" id="forgot-newpass" class="form-control" placeholder="New strong password">
+        </div>
+        <button type="submit" id="forgot-submit-btn" class="btn btn-primary btn-block" style="margin-top: 1rem;">
+          Verify Account &rarr;
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- MAINFRAME APP SHELL -->
+  <div id="mainframe-screen" class="app-container" style="display: none;">
+    <!-- Sidebar backdrop for mobile -->
+    <div id="sidebar-backdrop" class="sidebar-backdrop" onclick="App.toggleMobileSidebar()"></div>
+
+    <!-- SIDEBAR -->
+    <aside id="sidebar" class="sidebar">
+      <div class="sidebar-header">
+        <img src="/images/logo.svg" alt="Basco MCTEB" class="sidebar-logo">
+        <div class="sidebar-title">
+          <h1>MCTEB BASCO</h1>
+          <p>Tool Bank Mainframe</p>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <div class="nav-group-title">MAIN MENU</div>
+        <a class="nav-link active" onclick="App.navigateTo('dashboard')">
+          <span class="nav-icon">📊</span>
+          <span>Dashboard</span>
+        </a>
+        <a class="nav-link" onclick="App.navigateTo('catalog')">
+          <span class="nav-icon">🛠️</span>
+          <span>Tool Catalog</span>
+        </a>
+        <a class="nav-link" onclick="App.navigateTo('reservations')">
+          <span class="nav-icon">📅</span>
+          <span>Reservations</span>
+          <span class="nav-badge" id="badge-pending-reservations" style="display: none;">0</span>
+        </a>
+        <a class="nav-link" onclick="App.navigateTo('rentals')">
+          <span class="nav-icon">🔄</span>
+          <span>Rentals &amp; Returns</span>
+        </a>
+        <a class="nav-link" onclick="App.navigateTo('payments')">
+          <span class="nav-icon">💳</span>
+          <span>Payment Portal</span>
+        </a>
+
+        <div class="nav-group-title staff-only" style="display: none;">MUNICIPAL OPERATIONS</div>
+        <a class="nav-link staff-only" onclick="App.navigateTo('inventory')" style="display: none;">
+          <span class="nav-icon">📦</span>
+          <span>Inventory Manager</span>
+        </a>
+        <a class="nav-link staff-only" onclick="App.navigateTo('maintenance')" style="display: none;">
+          <span class="nav-icon">⚙️</span>
+          <span>Maintenance &amp; Repairs</span>
+        </a>
+        <a class="nav-link admin-only" onclick="App.navigateTo('users')" style="display: none;">
+          <span class="nav-icon">👥</span>
+          <span>User Directory</span>
+        </a>
+
+        <div class="nav-group-title">COMMUNITY &amp; SETTINGS</div>
+        <a class="nav-link" onclick="App.navigateTo('feedback')">
+          <span class="nav-icon">⭐</span>
+          <span>Community Reviews</span>
+        </a>
+        <a class="nav-link" onclick="App.navigateTo('profile')">
+          <span class="nav-icon">👤</span>
+          <span>My Profile</span>
+        </a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="user-snippet">
+          <div class="user-avatar" id="sidebar-user-avatar">U</div>
+          <div class="user-meta">
+            <div class="user-name" id="sidebar-user-name">User Name</div>
+            <span class="user-role-badge" id="sidebar-user-role">Borrower</span>
+          </div>
+        </div>
+        <button onclick="App.handleLogout()" title="Logout" style="background:none; border:none; color:rgba(255,255,255,0.7); cursor:pointer; font-size:1.1rem;">
+          🚪
+        </button>
+      </div>
+    </aside>
+
+    <!-- MAIN VIEW AREA -->
+    <main class="main-content">
+      <!-- Top Navbar -->
+      <header class="top-navbar">
+        <div class="navbar-left">
+          <button class="mobile-toggle-btn" onclick="App.toggleMobileSidebar()">☰</button>
+          <div class="view-title-wrap">
+            <h2 id="page-heading">Mainframe Dashboard</h2>
+            <p id="page-subheading">Municipality of Basco &bull; Province of Batanes</p>
+          </div>
+        </div>
+
+        <div class="navbar-right">
+          <!-- Low Bandwidth Mode Button -->
+          <button id="low-bw-btn" class="low-bw-btn" onclick="App.toggleLowBandwidth()" title="Toggle Low-Bandwidth Mode for fast island connectivity">
+            <span>⚡ Low-Bandwidth</span>
+          </button>
+
+          <!-- Notifications Bell -->
+          <div style="position: relative;">
+            <button class="notif-bell-btn" onclick="App.toggleNotificationsDropdown()" title="Notifications">
+              🔔
+              <span class="notif-badge-count" id="notif-badge" style="display: none;">0</span>
+            </button>
+            <!-- Dropdown -->
+            <div id="notif-dropdown" style="display: none; position: absolute; right: 0; top: 45px; width: 320px; background: #fff; border: 1px solid var(--border-color); border-radius: var(--radius-md); box-shadow: var(--shadow-lg); z-index: 1000; padding: 0.75rem;">
+              <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem; margin-bottom: 0.5rem;">
+                <strong style="font-size: 0.85rem;">Notifications</strong>
+                <button onclick="App.markAllNotificationsRead()" class="btn btn-sm btn-outline" style="padding: 0.15rem 0.4rem; font-size: 0.65rem;">Mark all read</button>
+              </div>
+              <div id="notif-list-wrap" style="max-height: 280px; overflow-y: auto; font-size: 0.8rem;">
+                <!-- Filled via JS -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- Views Container -->
+      <div class="page-view">
+        <!-- 1. DASHBOARD VIEW -->
+        <section id="view-dashboard" class="app-view">
+          <div class="stats-grid" id="dashboard-stats-grid">
+            <!-- Rendered by JS -->
+          </div>
+
+          <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 1.25rem;" id="dashboard-main-grid">
+            <div>
+              <div class="card">
+                <div class="card-header">
+                  <div class="card-title">🚀 Quick Actions</div>
+                </div>
+                <div style="display: flex; flex-wrap: wrap; gap: 0.75rem;">
+                  <button onclick="App.navigateTo('catalog')" class="btn btn-primary btn-sm">🛠️ Browse Equipment Catalog</button>
+                  <button onclick="App.navigateTo('reservations')" class="btn btn-outline btn-sm">📅 View Reservations</button>
+                  <button onclick="App.navigateTo('payments')" class="btn btn-secondary btn-sm">💳 Pay Equipment Rental</button>
+                  <button class="staff-only btn btn-outline btn-sm" onclick="App.openToolModal()" style="display: none;">➕ Add New Equipment</button>
+                </div>
+              </div>
+
+              <div class="card">
+                <div class="card-header">
+                  <div class="card-title">📦 Equipment by Category</div>
+                </div>
+                <div id="category-distribution-list" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 0.75rem;">
+                  <!-- Filled by JS -->
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <div class="card">
+                <div class="card-header">
+                  <div class="card-title">📜 Recent Activity</div>
+                </div>
+                <div id="dashboard-recent-activity" style="font-size: 0.8rem; max-height: 380px; overflow-y: auto;">
+                  <!-- Filled by JS -->
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 2. TOOL CATALOG VIEW -->
+        <section id="view-catalog" class="app-view" style="display: none;">
+          <div class="filter-bar">
+            <div class="search-input-wrap">
+              <span class="search-icon">🔍</span>
+              <input type="text" id="catalog-search" class="form-control" placeholder="Search tool name, specs, or ID..." oninput="App.filterCatalog()">
+            </div>
+            <select id="catalog-filter-status" class="form-select" style="width: auto;" onchange="App.filterCatalog()">
+              <option value="All">All Statuses</option>
+              <option value="Available">Available Only</option>
+              <option value="Reserved">Reserved</option>
+              <option value="Borrowed">Borrowed</option>
+              <option value="Maintenance">Maintenance</option>
+            </select>
+            <select id="catalog-filter-condition" class="form-select" style="width: auto;" onchange="App.filterCatalog()">
+              <option value="All">All Conditions</option>
+              <option value="Excellent">Excellent</option>
+              <option value="Good">Good</option>
+              <option value="Fair">Fair</option>
+            </select>
+          </div>
+
+          <!-- Category Pills -->
+          <div class="category-pills" id="catalog-category-pills">
+            <div class="category-pill active" onclick="App.selectCategory('All')">All Categories</div>
+            <div class="category-pill" onclick="App.selectCategory('Agricultural Tools')">🌾 Agricultural</div>
+            <div class="category-pill" onclick="App.selectCategory('Fishing Equipment')">🐟 Fishing</div>
+            <div class="category-pill" onclick="App.selectCategory('Carpentry Tools')">🪚 Carpentry</div>
+            <div class="category-pill" onclick="App.selectCategory('Construction Tools')">🏗️ Construction</div>
+            <div class="category-pill" onclick="App.selectCategory('Electrical Tools')">⚡ Electrical</div>
+            <div class="category-pill" onclick="App.selectCategory('Mechanical Tools')">🔧 Mechanical</div>
+            <div class="category-pill" onclick="App.selectCategory('Emergency Response Equipment')">🚨 Emergency</div>
+          </div>
+
+          <div class="tools-grid" id="catalog-tools-grid">
+            <!-- Filled via JS -->
+          </div>
+        </section>
+
+        <!-- 3. RESERVATIONS VIEW -->
+        <section id="view-reservations" class="app-view" style="display: none;">
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">📅 Equipment Reservations</div>
+              <button onclick="App.navigateTo('catalog')" class="btn btn-primary btn-sm">➕ Make New Reservation</button>
+            </div>
+            <div class="table-responsive">
+              <table class="table" id="reservations-table">
+                <thead>
+                  <tr>
+                    <th>Reservation ID</th>
+                    <th>Equipment</th>
+                    <th>Borrower</th>
+                    <th>Pickup Date</th>
+                    <th>Return Date</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="reservations-tbody">
+                  <!-- Filled via JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- 4. RENTALS & RETURNS VIEW -->
+        <section id="view-rentals" class="app-view" style="display: none;">
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">🔄 Active Borrowings &amp; Rental History</div>
+              <button class="staff-only btn btn-primary btn-sm" onclick="App.openCheckoutModal()" style="display: none;">
+                📤 Equipment Checkout
+              </button>
+            </div>
+            <div class="table-responsive">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>Rental ID</th>
+                    <th>Tool Name</th>
+                    <th>Borrower</th>
+                    <th>Rental Date</th>
+                    <th>Due Date</th>
+                    <th>Condition</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="rentals-tbody">
+                  <!-- Filled via JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- 5. PAYMENT PORTAL VIEW -->
+        <section id="view-payments" class="app-view" style="display: none;">
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">💳 Payments &amp; Official Receipts</div>
+              <button onclick="App.openPaymentModal()" class="btn btn-primary btn-sm">➕ Submit New Payment</button>
+            </div>
+            <div class="table-responsive">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>Receipt No.</th>
+                    <th>Payment ID</th>
+                    <th>Tool &amp; Purpose</th>
+                    <th>Amount</th>
+                    <th>Method &amp; Ref No.</th>
+                    <th>Date</th>
+                    <th>Status</th>
+                    <th>Receipt</th>
+                  </tr>
+                </thead>
+                <tbody id="payments-tbody">
+                  <!-- Filled via JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- 6. INVENTORY MANAGER (Staff / Admin) -->
+        <section id="view-inventory" class="app-view" style="display: none;">
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">📦 Municipal Equipment Inventory</div>
+              <button onclick="App.openToolModal()" class="btn btn-primary btn-sm">➕ Add New Equipment</button>
+            </div>
+            <div class="table-responsive">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>Tool ID</th>
+                    <th>Name &amp; Category</th>
+                    <th>Rental Fee</th>
+                    <th>Total / Avail</th>
+                    <th>Condition</th>
+                    <th>Status</th>
+                    <th>Borrowed Times</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="inventory-tbody">
+                  <!-- Filled via JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- 7. MAINTENANCE & REPAIRS -->
+        <section id="view-maintenance" class="app-view" style="display: none;">
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">⚙️ Maintenance, Damage Reports &amp; Repairs</div>
+              <button onclick="App.openReportDamageModal()" class="btn btn-danger btn-sm">⚠️ Report Damage / Defect</button>
+            </div>
+            <div class="table-responsive">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>Ticket ID</th>
+                    <th>Equipment</th>
+                    <th>Issue Description</th>
+                    <th>Severity</th>
+                    <th>Technician / Motorpool</th>
+                    <th>Cost</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="maintenance-tbody">
+                  <!-- Filled via JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- 8. USER DIRECTORY (Admin) -->
+        <section id="view-users" class="app-view" style="display: none;">
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">👥 Registered Residents &amp; Municipal Staff</div>
+              <div>
+                <a href="/api/dashboard/export?format=json" class="btn btn-outline btn-sm">📥 Backup JSON</a>
+                <a href="/api/dashboard/export?format=sql" class="btn btn-secondary btn-sm">🗄️ Export MySQL SQL</a>
+              </div>
+            </div>
+            <div class="table-responsive">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>User ID</th>
+                    <th>Full Name</th>
+                    <th>Barangay</th>
+                    <th>Contact</th>
+                    <th>Email</th>
+                    <th>Role</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="users-tbody">
+                  <!-- Filled via JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- 9. COMMUNITY FEEDBACK -->
+        <section id="view-feedback" class="app-view" style="display: none;">
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">⭐ Community Feedback &amp; Equipment Ratings</div>
+            </div>
+            <div id="feedback-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1rem;">
+              <!-- Filled via JS -->
+            </div>
+          </div>
+        </section>
+
+        <!-- 10. PROFILE VIEW -->
+        <section id="view-profile" class="app-view" style="display: none;">
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+            <div class="card">
+              <div class="card-header">
+                <div class="card-title">👤 Resident Profile Information</div>
+              </div>
+              <form onsubmit="App.handleUpdateProfile(event)">
+                <div class="form-grid-2">
+                  <div class="form-group">
+                    <label class="form-label">First Name</label>
+                    <input type="text" id="prof-firstName" class="form-control" required>
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Middle Name</label>
+                    <input type="text" id="prof-middleName" class="form-control">
+                  </div>
+                </div>
+
+                <div class="form-grid-2">
+                  <div class="form-group">
+                    <label class="form-label">Last Name</label>
+                    <input type="text" id="prof-lastName" class="form-control" required>
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Birthday</label>
+                    <input type="date" id="prof-birthday" class="form-control" required>
+                  </div>
+                </div>
+
+                <div class="form-grid-2">
+                  <div class="form-group">
+                    <label class="form-label">Contact Number</label>
+                    <input type="tel" id="prof-contact" class="form-control" required>
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Basco Barangay</label>
+                    <select id="prof-barangay" class="form-select" required>
+                      <option value="Ihuvok I (Kaychanarianan)">Ihuvok I (Kaychanarianan)</option>
+                      <option value="Ihuvok II (Kayvaluganan)">Ihuvok II (Kayvaluganan)</option>
+                      <option value="San Antonio">San Antonio</option>
+                      <option value="San Joaquin">San Joaquin</option>
+                      <option value="Chanarian">Chanarian</option>
+                      <option value="Kayhuvokan">Kayhuvokan</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="form-grid-2">
+                  <div class="form-group">
+                    <label class="form-label">House No.</label>
+                    <input type="text" id="prof-houseNo" class="form-control" required>
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Street Address</label>
+                    <input type="text" id="prof-street" class="form-control" required>
+                  </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-sm" style="margin-top: 0.5rem;">Save Changes</button>
+              </form>
+            </div>
+
+            <div class="card">
+              <div class="card-header">
+                <div class="card-title">🔒 Change Account Password</div>
+              </div>
+              <form onsubmit="App.handleChangePassword(event)">
+                <div class="form-group">
+                  <label class="form-label">Current Password</label>
+                  <input type="password" id="pass-current" class="form-control" required>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">New Password</label>
+                  <input type="password" id="pass-new" class="form-control" minlength="6" required>
+                </div>
+                <button type="submit" class="btn btn-primary btn-sm" style="margin-top: 0.5rem;">Update Password</button>
+              </form>
+            </div>
+          </div>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <!-- MODALS CONTAINER -->
+
+  <!-- 1. Tool Details Modal -->
+  <div id="modal-tool-details" class="modal-overlay">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-header">
+        <h3 id="m-tool-title">Tool Name</h3>
+        <button class="modal-close-btn" onclick="App.closeModal('modal-tool-details')">&times;</button>
+      </div>
+      <div class="modal-body" id="m-tool-body">
+        <!-- Rendered via JS -->
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline btn-sm" onclick="App.closeModal('modal-tool-details')">Close</button>
+        <button id="m-tool-reserve-btn" class="btn btn-primary btn-sm" onclick="App.triggerReservationFromDetails()">Reserve Tool</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. Reservation Booking Modal -->
+  <div id="modal-reserve" class="modal-overlay">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h3>Reserve Equipment</h3>
+        <button class="modal-close-btn" onclick="App.closeModal('modal-reserve')">&times;</button>
+      </div>
+      <form onsubmit="App.handleCreateReservation(event)">
+        <div class="modal-body">
+          <input type="hidden" id="res-tool-id">
+          <div class="form-group">
+            <label class="form-label">Equipment</label>
+            <input type="text" id="res-tool-name" class="form-control" readonly>
+          </div>
+          <div class="form-grid-2">
+            <div class="form-group">
+              <label class="form-label">Pickup Date *</label>
+              <input type="date" id="res-pickup-date" class="form-control" required onchange="App.calcReservationFee()">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Expected Return Date *</label>
+              <input type="date" id="res-return-date" class="form-control" required onchange="App.calcReservationFee()">
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Purpose of Use (e.g. Farm Land Prep, House Repair, Fishing) *</label>
+            <textarea id="res-purpose" class="form-control" rows="2" placeholder="State your intended community/livelihood activity..." required></textarea>
+          </div>
+          <div style="background-color: var(--primary-subtle); padding: 0.75rem; border-radius: var(--radius-sm); font-size: 0.85rem;">
+            <strong>Estimated Rental Fee:</strong> <span id="res-est-fee" style="font-weight: 800; color: var(--primary);">₱0.00</span>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline btn-sm" onclick="App.closeModal('modal-reserve')">Cancel</button>
+          <button type="submit" class="btn btn-primary btn-sm">Submit Reservation Request</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 3. Checkout Modal (Staff) -->
+  <div id="modal-checkout" class="modal-overlay">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h3>Equipment Checkout / Release</h3>
+        <button class="modal-close-btn" onclick="App.closeModal('modal-checkout')">&times;</button>
+      </div>
+      <form onsubmit="App.handleCheckout(event)">
+        <div class="modal-body">
+          <input type="hidden" id="chk-reservationId">
+          <div class="form-group">
+            <label class="form-label">Tool ID / Name *</label>
+            <select id="chk-toolId" class="form-select" required></select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Borrower User ID *</label>
+            <select id="chk-userId" class="form-select" required></select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Return Due Date *</label>
+            <input type="date" id="chk-dueDate" class="form-control" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Initial Equipment Condition</label>
+            <select id="chk-condition" class="form-select">
+              <option value="Excellent">Excellent</option>
+              <option value="Good" selected>Good</option>
+              <option value="Fair">Fair</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Inspection &amp; Release Remarks</label>
+            <input type="text" id="chk-notes" class="form-control" placeholder="Condition verified by staff...">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline btn-sm" onclick="App.closeModal('modal-checkout')">Cancel</button>
+          <button type="submit" class="btn btn-primary btn-sm">Confirm Equipment Release</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 4. Return Validation Modal (Staff) -->
+  <div id="modal-return" class="modal-overlay">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h3>Validate Equipment Return</h3>
+        <button class="modal-close-btn" onclick="App.closeModal('modal-return')">&times;</button>
+      </div>
+      <form onsubmit="App.handleReturnEquipment(event)">
+        <div class="modal-body">
+          <input type="hidden" id="ret-rentalId">
+          <p id="ret-info" style="font-size: 0.85rem; margin-bottom: 1rem; color: var(--text-muted);"></p>
+          <div class="form-group">
+            <label class="form-label">Returned Equipment Condition *</label>
+            <select id="ret-condition" class="form-select" onchange="App.toggleReturnDamageAlert(this.value)">
+              <option value="Good" selected>Good (Ready for next borrower)</option>
+              <option value="Excellent">Excellent</option>
+              <option value="Fair">Fair</option>
+              <option value="Needs Repair">Needs Repair / Damaged (Routes to Maintenance)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Staff Inspection Remarks</label>
+            <textarea id="ret-notes" class="form-control" rows="2" placeholder="Cleanliness, operational test, parts check..."></textarea>
+          </div>
+          <div class="form-grid-2">
+            <div class="form-group">
+              <label class="form-label">Overdue Penalty (₱)</label>
+              <input type="number" id="ret-overdue" class="form-control" value="0" min="0">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Damage Assessment Fee (₱)</label>
+              <input type="number" id="ret-damage" class="form-control" value="0" min="0">
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline btn-sm" onclick="App.closeModal('modal-return')">Cancel</button>
+          <button type="submit" class="btn btn-primary btn-sm">Complete Return &amp; Update Inventory</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 5. Payment Modal -->
+  <div id="modal-payment" class="modal-overlay">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h3>Submit Payment</h3>
+        <button class="modal-close-btn" onclick="App.closeModal('modal-payment')">&times;</button>
+      </div>
+      <form onsubmit="App.handleSubmitPayment(event)">
+        <div class="modal-body">
+          <input type="hidden" id="pay-resId">
+          <div class="form-group">
+            <label class="form-label">Equipment *</label>
+            <select id="pay-toolId" class="form-select" required></select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Rental Amount (₱) *</label>
+            <input type="number" id="pay-amount" class="form-control" step="0.01" min="1" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Payment Method *</label>
+            <select id="pay-method" class="form-select" required onchange="App.handlePaymentMethodChange(this.value)">
+              <option value="GCash">GCash (0917-123-4567 / Basco LGU MCTEB)</option>
+              <option value="Maya">Maya (0917-123-4567)</option>
+              <option value="Bank Transfer (Landbank/BDO)">Bank Transfer (Landbank: 0451-2234-90)</option>
+              <option value="Cash at Municipal Treasury">Cash at Municipal Treasury Counter</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Transaction Reference Number *</label>
+            <input type="text" id="pay-ref" class="form-control" placeholder="e.g. GCASH-1928374 or OR Reference" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Remarks / Note</label>
+            <input type="text" id="pay-notes" class="form-control" placeholder="Payment for tool rental">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline btn-sm" onclick="App.closeModal('modal-payment')">Cancel</button>
+          <button type="submit" class="btn btn-primary btn-sm">Confirm Payment &amp; Get Receipt</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 6. Receipt Modal -->
+  <div id="modal-receipt" class="modal-overlay">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-header">
+        <h3>Official Electronic Receipt</h3>
+        <button class="modal-close-btn" onclick="App.closeModal('modal-receipt')">&times;</button>
+      </div>
+      <div class="modal-body" id="receipt-modal-content">
+        <!-- Rendered via JS -->
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline btn-sm" onclick="App.closeModal('modal-receipt')">Close</button>
+        <button id="btn-print-receipt" class="btn btn-primary btn-sm">🖨️ Print Receipt</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 7. Tool Add/Edit Modal (Staff/Admin) -->
+  <div id="modal-tool-form" class="modal-overlay">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-header">
+        <h3 id="tool-form-title">Add Equipment</h3>
+        <button class="modal-close-btn" onclick="App.closeModal('modal-tool-form')">&times;</button>
+      </div>
+      <form onsubmit="App.handleSaveTool(event)">
+        <div class="modal-body">
+          <input type="hidden" id="tf-toolId">
+          <div class="form-grid-2">
+            <div class="form-group">
+              <label class="form-label">Equipment Name *</label>
+              <input type="text" id="tf-name" class="form-control" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Category *</label>
+              <select id="tf-category" class="form-select" required>
+                <option value="Agricultural Tools">Agricultural Tools</option>
+                <option value="Fishing Equipment">Fishing Equipment</option>
+                <option value="Carpentry Tools">Carpentry Tools</option>
+                <option value="Construction Tools">Construction Tools</option>
+                <option value="Electrical Tools">Electrical Tools</option>
+                <option value="Mechanical Tools">Mechanical Tools</option>
+                <option value="Emergency Response Equipment">Emergency Response Equipment</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Description *</label>
+            <textarea id="tf-desc" class="form-control" rows="2" required></textarea>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Specifications *</label>
+            <input type="text" id="tf-specs" class="form-control" placeholder="Horsepower, cutting size, capacity..." required>
+          </div>
+          <div class="form-grid-3">
+            <div class="form-group">
+              <label class="form-label">Daily Rental Fee (₱) *</label>
+              <input type="number" id="tf-fee" class="form-control" step="0.01" min="0" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Security Deposit (₱)</label>
+              <input type="number" id="tf-deposit" class="form-control" step="0.01" min="0" value="0">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Total Quantity</label>
+              <input type="number" id="tf-qty" class="form-control" min="1" value="1" required>
+            </div>
+          </div>
+          <div class="form-grid-2">
+            <div class="form-group">
+              <label class="form-label">Condition</label>
+              <select id="tf-condition" class="form-select">
+                <option value="Excellent">Excellent</option>
+                <option value="Good" selected>Good</option>
+                <option value="Fair">Fair</option>
+                <option value="Needs Repair">Needs Repair</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Status</label>
+              <select id="tf-status" class="form-select">
+                <option value="Available" selected>Available</option>
+                <option value="Maintenance">Maintenance</option>
+                <option value="Damaged">Damaged</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline btn-sm" onclick="App.closeModal('modal-tool-form')">Cancel</button>
+          <button type="submit" class="btn btn-primary btn-sm">Save Equipment</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 8. Maintenance / Report Damage Modal -->
+  <div id="modal-maintenance-report" class="modal-overlay">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h3>Report Equipment Damage / Issue</h3>
+        <button class="modal-close-btn" onclick="App.closeModal('modal-maintenance-report')">&times;</button>
+      </div>
+      <form onsubmit="App.handleReportDamage(event)">
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="form-label">Equipment *</label>
+            <select id="rep-toolId" class="form-select" required></select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Severity Level</label>
+            <select id="rep-severity" class="form-select">
+              <option value="Minor">Minor (Scratches/loose bolt)</option>
+              <option value="Moderate" selected>Moderate (Needs part check)</option>
+              <option value="Severe">Severe (Not operational)</option>
+              <option value="Critical">Critical (Safety hazard)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Issue Description *</label>
+            <textarea id="rep-desc" class="form-control" rows="3" placeholder="Describe the malfunction, noise, or broken part..." required></textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline btn-sm" onclick="App.closeModal('modal-maintenance-report')">Cancel</button>
+          <button type="submit" class="btn btn-danger btn-sm">Submit Damage Report</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 9. Maintenance Update Modal (Staff) -->
+  <div id="modal-maintenance-update" class="modal-overlay">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h3>Update Maintenance Ticket</h3>
+        <button class="modal-close-btn" onclick="App.closeModal('modal-maintenance-update')">&times;</button>
+      </div>
+      <form onsubmit="App.handleUpdateMaintenance(event)">
+        <div class="modal-body">
+          <input type="hidden" id="mnt-ticketId">
+          <div class="form-group">
+            <label class="form-label">Repair Status</label>
+            <select id="mnt-status" class="form-select">
+              <option value="Reported">Reported</option>
+              <option value="Scheduled">Scheduled</option>
+              <option value="In Progress">In Progress</option>
+              <option value="Completed">Completed (Restores tool to Available)</option>
+              <option value="Decommissioned">Decommissioned</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Assigned Technician / Shop</label>
+            <input type="text" id="mnt-technician" class="form-control" value="Basco Municipal Motorpool">
+          </div>
+          <div class="form-grid-2">
+            <div class="form-group">
+              <label class="form-label">Estimated Cost (₱)</label>
+              <input type="number" id="mnt-est-cost" class="form-control" step="0.01">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Actual Repair Cost (₱)</label>
+              <input type="number" id="mnt-act-cost" class="form-control" step="0.01">
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Resolution &amp; Repair Notes</label>
+            <textarea id="mnt-notes" class="form-control" rows="2" placeholder="Parts replaced, test run conducted..."></textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline btn-sm" onclick="App.closeModal('modal-maintenance-update')">Cancel</button>
+          <button type="submit" class="btn btn-primary btn-sm">Save Maintenance Update</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 10. Feedback Submission Modal -->
+  <div id="modal-feedback" class="modal-overlay">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h3>Community Rating &amp; Feedback</h3>
+        <button class="modal-close-btn" onclick="App.closeModal('modal-feedback')">&times;</button>
+      </div>
+      <form onsubmit="App.handleSubmitFeedback(event)">
+        <div class="modal-body">
+          <input type="hidden" id="fdb-toolId">
+          <input type="hidden" id="fdb-rentalId">
+          <div class="form-group">
+            <label class="form-label">Overall Rating (1 to 5 Stars) *</label>
+            <select id="fdb-rating" class="form-select" required>
+              <option value="5">⭐⭐⭐⭐⭐ 5 Stars - Outstanding</option>
+              <option value="4">⭐⭐⭐⭐ 4 Stars - Very Good</option>
+              <option value="3">⭐⭐⭐ 3 Stars - Good</option>
+              <option value="2">⭐⭐ 2 Stars - Needs Improvement</option>
+              <option value="1">⭐ 1 Star - Poor</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Your Comments / Community Experience</label>
+            <textarea id="fdb-comments" class="form-control" rows="3" placeholder="Share how this equipment helped your livelihood or project in Basco..."></textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline btn-sm" onclick="App.closeModal('modal-feedback')">Cancel</button>
+          <button type="submit" class="btn btn-primary btn-sm">Submit Review</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div id="toast-container"></div>
+
+  <!-- Scripts -->
+  <script src="/js/api.js"></script>
+  <script src="/js/app.js"></script>
+</body>
+</html>

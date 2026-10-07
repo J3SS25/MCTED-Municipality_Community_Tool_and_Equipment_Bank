@@ -1,0 +1,44 @@
+[
+  {
+    "feedbackId": "FDB-2026-0001",
+    "rentalId": "RNT-2026-0001",
+    "toolId": "TL-AGR-002",
+    "userId": "USR-2026-0003",
+    "userName": "Juan Dita",
+    "rating": 5,
+    "toolConditionRating": 5,
+    "serviceRating": 5,
+    "comments": "Napaka-ayos gamitin ng brush cutter. Mabilis natapos ang paglinis ng bukid. Salamat sa Basco LGU!",
+    "isPublic": true,
+    "createdAt": "2026-09-22T17:00:00.000Z",
+    "updatedAt": "2026-09-22T17:00:00.000Z"
+  },
+  {
+    "feedbackId": "FDB-2026-0002",
+    "rentalId": null,
+    "toolId": "TL-AGR-001",
+    "userId": "USR-2026-0004",
+    "userName": "Elena Castillo",
+    "rating": 5,
+    "toolConditionRating": 5,
+    "serviceRating": 5,
+    "comments": "Very powerful Kubota tiller. Saved us 3 full days of manual plowing.",
+    "isPublic": true,
+    "createdAt": "2026-09-28T14:30:00.000Z",
+    "updatedAt": "2026-09-28T14:30:00.000Z"
+  },
+  {
+    "feedbackId": "FDB-2026-0003",
+    "rentalId": "RNT-2026-0002",
+    "toolId": "TL-CRP-001",
+    "userId": "USR-2026-0003",
+    "userName": "Juan Dita",
+    "rating": 5,
+    "toolConditionRating": 5,
+    "serviceRating": 5,
+    "comments": "Excellent quality circular saw. Cut through hardwood smoothly!",
+    "isPublic": true,
+    "createdAt": "2026-10-07T11:00:32.994Z",
+    "updatedAt": "2026-10-07T11:00:32.994Z"
+  }
+]

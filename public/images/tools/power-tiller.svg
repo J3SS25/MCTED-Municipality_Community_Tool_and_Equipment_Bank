@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 200" width="100%" height="100%">
+  <rect width="300" height="200" fill="#f0fdf4" rx="8"/>
+  <rect x="10" y="10" width="280" height="180" fill="#ffffff" stroke="#bbf7d0" stroke-width="1.5" rx="6"/>
+  <!-- Power Tiller graphic -->
+  <g transform="translate(150, 105)">
+    <!-- Wheels with treads -->
+    <circle cx="-50" cy="35" r="28" fill="#334155" stroke="#1e293b" stroke-width="4"/>
+    <circle cx="-50" cy="35" r="14" fill="#94a3b8"/>
+    <!-- Engine Block (Kubota Orange / Red) -->
+    <rect x="-65" y="-30" width="60" height="50" rx="6" fill="#ea580c" stroke="#c2410c" stroke-width="2"/>
+    <rect x="-60" y="-45" width="25" height="18" rx="3" fill="#334155"/>
+    <rect x="-25" y="-40" width="15" height="12" rx="2" fill="#64748b"/>
+    <!-- Tiller Blades / Rotor -->
+    <circle cx="35" cy="40" r="22" fill="#0f172a" stroke="#cbd5e1" stroke-width="2" stroke-dasharray="8,6"/>
+    <!-- Metal Hood / Cover -->
+    <path d="M 10 20 Q 40 10 65 35 L 55 45 Q 35 25 10 30 Z" fill="#ea580c"/>
+    <!-- Handles and Chassis -->
+    <line x1="-40" y1="-10" x2="35" y2="35" stroke="#475569" stroke-width="5" stroke-linecap="round"/>
+    <line x1="-30" y1="-15" x2="-90" y2="-60" stroke="#334155" stroke-width="4" stroke-linecap="round"/>
+    <line x1="-90" y1="-60" x2="-100" y2="-55" stroke="#e11d48" stroke-width="6" stroke-linecap="round"/>
+  </g>
+  <text x="150" y="180" font-family="system-ui, sans-serif" font-size="11" font-weight="600" fill="#15803d" text-anchor="middle">Kubota Hand Tractor / Power Tiller</text>
+</svg>
