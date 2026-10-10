@@ -19,8 +19,8 @@
 
       <div class="auth-tabs">
         <div class="auth-tab active" id="tab-login-btn" onclick="App.switchAuthTab('login')">Log In</div>
-        <div class="auth-tab" id="tab-register-btn" onclick="App.switchAuthTab('register')">New Registration</div>
-        <div class="auth-tab" id="tab-forgot-btn" onclick="App.switchAuthTab('forgot')">Forgot PIN</div>
+        <div class="auth-tab" id="tab-register-btn" onclick="App.switchAuthTab('register')">Create Account</div>
+        <div class="auth-tab" id="tab-forgot-btn" onclick="App.switchAuthTab('forgot')">Forgot Password</div>
       </div>
 
       <!-- Login Form -->
@@ -31,18 +31,27 @@
         </div>
         <div class="form-group">
           <label class="form-label">Password</label>
-          <input type="password" id="login-password" class="form-control" placeholder="••••••••" required>
+          <div class="password-field">
+            <input type="password" id="login-password" class="form-control" placeholder="••••••••" required>
+            <button type="button" class="toggle-password-btn" data-target="login-password" aria-label="Show password">👁</button>
+          </div>
         </div>
+
+        <div class="auth-options-row">
+          <label class="remember-me">
+            <input type="checkbox" id="remember-me" checked>
+            <span>Remember me</span>
+          </label>
+          <button type="button" class="text-link" onclick="App.switchAuthTab('forgot')">Forgot password?</button>
+        </div>
+
         <button type="submit" class="btn btn-primary btn-block" style="margin-top: 1rem;">
           Enter MCTEB Mainframe &rarr;
         </button>
 
-        <div style="margin-top: 1.25rem; padding-top: 1rem; border-top: 1px solid var(--border-color); font-size: 0.75rem; color: var(--text-muted);">
-          <strong>Demo Accounts:</strong><br>
-          &bull; <strong>Admin:</strong> admin@basco.gov.ph / Admin@123<br>
-          &bull; <strong>Staff:</strong> staff@basco.gov.ph / Staff@123<br>
-          &bull; <strong>Borrower:</strong> borrower@basco.gov.ph / User@123
-        </div>
+        <button type="button" class="btn btn-outline btn-block guest-access-btn" onclick="App.enterGuestMode()">
+          Browse catalog as guest
+        </button>
       </form>
 
       <!-- Registration Form -->
@@ -101,12 +110,27 @@
 
         <div class="form-group">
           <label class="form-label">Email Address *</label>
-          <input type="email" id="reg-email" class="form-control" required>
+          <div class="email-verification-row">
+            <input type="email" id="reg-email" class="form-control" required>
+            <button type="button" class="btn btn-outline btn-sm" onclick="App.sendVerificationCode()">Verify email</button>
+          </div>
+        </div>
+
+        <div class="form-group" id="verification-code-wrap" style="display: none;">
+          <label class="form-label">Verification Code</label>
+          <input type="text" id="reg-email-code" class="form-control" placeholder="Enter 6-digit code sent to your email">
         </div>
 
         <div class="form-group">
           <label class="form-label">Password *</label>
-          <input type="password" id="reg-password" class="form-control" minlength="6" required>
+          <div class="password-field">
+            <input type="password" id="reg-password" class="form-control" minlength="6" required>
+            <button type="button" class="toggle-password-btn" data-target="reg-password" aria-label="Show password">👁</button>
+          </div>
+          <div class="password-meter-wrap">
+            <div class="password-meter"><span id="reg-password-meter"></span></div>
+            <small id="reg-password-strength" class="password-strength-text">Strength: Not started</small>
+          </div>
         </div>
 
         <div class="form-group">
@@ -134,16 +158,19 @@
           <label class="form-label">Registered Email</label>
           <input type="email" id="forgot-email" class="form-control" placeholder="user@basco.gov.ph" required>
         </div>
-        <div class="form-group" id="forgot-pin-wrap" style="display: none;">
-          <label class="form-label">Security PIN (Last 4 digits of contact number)</label>
-          <input type="text" id="forgot-pin" class="form-control" placeholder="e.g. 1234">
-        </div>
-        <div class="form-group" id="forgot-pass-wrap" style="display: none;">
+        <div class="form-group" id="forgot-pass-wrap">
           <label class="form-label">New Password</label>
-          <input type="password" id="forgot-newpass" class="form-control" placeholder="New strong password">
+          <div class="password-field">
+            <input type="password" id="forgot-newpass" class="form-control" placeholder="New strong password">
+            <button type="button" class="toggle-password-btn" data-target="forgot-newpass" aria-label="Show password">👁</button>
+          </div>
+          <div class="password-meter-wrap">
+            <div class="password-meter"><span id="forgot-password-meter"></span></div>
+            <small id="forgot-password-strength" class="password-strength-text">Strength: Not started</small>
+          </div>
         </div>
         <button type="submit" id="forgot-submit-btn" class="btn btn-primary btn-block" style="margin-top: 1rem;">
-          Verify Account &rarr;
+          Reset Password &rarr;
         </button>
       </form>
     </div>
