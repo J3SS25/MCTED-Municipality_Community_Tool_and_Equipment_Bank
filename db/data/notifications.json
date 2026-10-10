@@ -6,9 +6,9 @@
     "message": "Your reservation for \"Kubota 7HP Hand Tractor\" (RES-2026-0001) has been approved. Pickup date is Oct 10, 2026.",
     "type": "success",
     "link": "/reservations?id=RES-2026-0001",
-    "isRead": false,
+    "isRead": true,
     "createdAt": "2026-10-02T09:15:00.000Z",
-    "updatedAt": "2026-10-02T09:15:00.000Z"
+    "updatedAt": "2026-10-08T05:55:13.000Z"
   },
   {
     "notificationId": "NOTIF-00002",
@@ -39,9 +39,9 @@
     "message": "Juan Dita submitted a reservation for \"Bosch Professional Circular Saw GKS 190\" (2026-11-01 to 2026-11-03).",
     "type": "info",
     "link": "/reservations?id=RES-2026-0003",
-    "isRead": false,
+    "isRead": true,
     "createdAt": "2026-10-07T11:00:32.836Z",
-    "updatedAt": "2026-10-07T11:00:32.836Z"
+    "updatedAt": "2026-10-08T05:55:13.000Z"
   },
   {
     "notificationId": "NOTIF-00005",
@@ -50,9 +50,9 @@
     "message": "Your reservation request (RES-2026-0003) for \"Bosch Professional Circular Saw GKS 190\" has been submitted for Municipal Staff review.",
     "type": "info",
     "link": "",
-    "isRead": false,
+    "isRead": true,
     "createdAt": "2026-10-07T11:00:32.838Z",
-    "updatedAt": "2026-10-07T11:00:32.838Z"
+    "updatedAt": "2026-10-08T05:55:13.000Z"
   },
   {
     "notificationId": "NOTIF-00006",
@@ -61,9 +61,9 @@
     "message": "Your reservation for \"Bosch Professional Circular Saw GKS 190\" has been APPROVED. Please proceed to payment to confirm pickup on 2026-11-01.",
     "type": "success",
     "link": "/payments?reservationId=RES-2026-0003",
-    "isRead": false,
+    "isRead": true,
     "createdAt": "2026-10-07T11:00:32.926Z",
-    "updatedAt": "2026-10-07T11:00:32.926Z"
+    "updatedAt": "2026-10-08T05:55:13.000Z"
   },
   {
     "notificationId": "NOTIF-00007",
@@ -72,9 +72,9 @@
     "message": "Your payment of ₱100.00 via GCash has been recorded (Official Receipt: OR-2026-146110).",
     "type": "success",
     "link": "/receipts/OR-2026-146110",
-    "isRead": false,
+    "isRead": true,
     "createdAt": "2026-10-07T11:00:32.937Z",
-    "updatedAt": "2026-10-07T11:00:32.937Z"
+    "updatedAt": "2026-10-08T05:55:13.000Z"
   },
   {
     "notificationId": "NOTIF-00008",
@@ -83,9 +83,9 @@
     "message": "You have successfully checked out \"Bosch Professional Circular Saw GKS 190\". Expected return due date is 2026-11-03. Please operate with safety gear.",
     "type": "info",
     "link": "",
-    "isRead": false,
+    "isRead": true,
     "createdAt": "2026-10-07T11:00:32.950Z",
-    "updatedAt": "2026-10-07T11:00:32.950Z"
+    "updatedAt": "2026-10-08T05:55:13.000Z"
   },
   {
     "notificationId": "NOTIF-00009",
@@ -94,9 +94,9 @@
     "message": "Your return for \"Bosch Professional Circular Saw GKS 190\" has been validated and completed. Thank you for using Basco MCTEB! Please leave your feedback.",
     "type": "success",
     "link": "/feedback?rentalId=RNT-2026-0002",
-    "isRead": false,
+    "isRead": true,
     "createdAt": "2026-10-07T11:00:32.960Z",
-    "updatedAt": "2026-10-07T11:00:32.960Z"
+    "updatedAt": "2026-10-08T05:55:13.000Z"
   },
   {
     "notificationId": "NOTIF-00010",
@@ -105,9 +105,9 @@
     "message": "Issue reported on \"200A Portable Inverter Arc / TIG Welder\": Welding lead connection cable clamp loose. (Severity: Moderate)",
     "type": "danger",
     "link": "/maintenance?id=MNT-2026-0002",
-    "isRead": false,
+    "isRead": true,
     "createdAt": "2026-10-07T11:00:32.970Z",
-    "updatedAt": "2026-10-07T11:00:32.970Z"
+    "updatedAt": "2026-10-08T05:55:13.000Z"
   },
   {
     "notificationId": "NOTIF-00011",
@@ -116,9 +116,9 @@
     "message": "Juan Dita submitted a reservation for \"Kubota 7HP Hand Tractor / Power Tiller\" (2026-10-08 to 2026-10-10).",
     "type": "info",
     "link": "/reservations?id=RES-2026-0004",
-    "isRead": false,
+    "isRead": true,
     "createdAt": "2026-10-07T11:39:22.325Z",
-    "updatedAt": "2026-10-07T11:39:22.325Z"
+    "updatedAt": "2026-10-08T05:55:13.000Z"
   },
   {
     "notificationId": "NOTIF-00012",
@@ -127,8 +127,8 @@
     "message": "Your reservation request (RES-2026-0004) for \"Kubota 7HP Hand Tractor / Power Tiller\" has been submitted for Municipal Staff review.",
     "type": "info",
     "link": "",
-    "isRead": false,
+    "isRead": true,
     "createdAt": "2026-10-07T11:39:22.331Z",
-    "updatedAt": "2026-10-07T11:39:22.331Z"
+    "updatedAt": "2026-10-08T05:55:13.000Z"
   }
 ]
