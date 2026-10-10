@@ -18,7 +18,7 @@
     "failedLoginAttempts": 0,
     "lockedUntil": null,
     "createdAt": "2026-01-10T08:00:00.000Z",
-    "updatedAt": "2026-10-08T05:21:25.006Z"
+    "updatedAt": "2026-10-10T09:44:16.224Z"
   },
   {
     "userId": "USR-2026-0002",
@@ -39,7 +39,7 @@
     "failedLoginAttempts": 0,
     "lockedUntil": null,
     "createdAt": "2026-01-15T09:30:00.000Z",
-    "updatedAt": "2026-10-08T05:34:49.966Z"
+    "updatedAt": "2026-10-10T09:44:16.720Z"
   },
   {
     "userId": "USR-2026-0003",
@@ -60,7 +60,7 @@
     "failedLoginAttempts": 0,
     "lockedUntil": null,
     "createdAt": "2026-02-01T10:00:00.000Z",
-    "updatedAt": "2026-10-08T05:55:00.551Z"
+    "updatedAt": "2026-10-10T09:44:16.535Z"
   },
   {
     "userId": "USR-2026-0004",
@@ -103,5 +103,26 @@
     "lockedUntil": null,
     "createdAt": "2026-10-07T11:00:32.739Z",
     "updatedAt": "2026-10-07T11:00:32.739Z"
+  },
+  {
+    "userId": "USR-2026-0006",
+    "firstName": "Maria",
+    "middleName": "G.",
+    "lastName": "Castillejos",
+    "birthday": "1995-05-15",
+    "age": 31,
+    "contactNumber": "09191239876",
+    "houseNumber": "55",
+    "street": "National Highway",
+    "barangay": "San Antonio",
+    "email": "test.resident.1791625456233@basco.gov.ph",
+    "passwordHash": "$2b$10$KgLVJnpb.VgBd6CIUMlY/.mEnnHT9S.HRjLEXM9iVY8G5B4bwEHci",
+    "role": "Borrower",
+    "status": "Active",
+    "avatar": "",
+    "failedLoginAttempts": 0,
+    "lockedUntil": null,
+    "createdAt": "2026-10-10T09:44:16.338Z",
+    "updatedAt": "2026-10-10T09:44:16.338Z"
   }
 ]

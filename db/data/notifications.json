@@ -130,5 +130,93 @@
     "isRead": true,
     "createdAt": "2026-10-07T11:39:22.331Z",
     "updatedAt": "2026-10-08T05:55:13.000Z"
+  },
+  {
+    "notificationId": "NOTIF-00013",
+    "userId": "USR-2026-0006",
+    "title": "Welcome to Basco MCTEB!",
+    "message": "Hello Maria, your account (USR-2026-0006) has been successfully registered. You can now browse and reserve community tools and equipment.",
+    "type": "success",
+    "link": "",
+    "isRead": false,
+    "createdAt": "2026-10-10T09:44:16.341Z",
+    "updatedAt": "2026-10-10T09:44:16.341Z"
+  },
+  {
+    "notificationId": "NOTIF-00014",
+    "userId": "ALL",
+    "title": "New Equipment Reservation Request",
+    "message": "Nike Shoes submitted a reservation for \"Bosch Professional Circular Saw GKS 190\" (2026-11-01 to 2026-11-03).",
+    "type": "info",
+    "link": "/reservations?id=RES-2026-0005",
+    "isRead": false,
+    "createdAt": "2026-10-10T09:44:16.553Z",
+    "updatedAt": "2026-10-10T09:44:16.553Z"
+  },
+  {
+    "notificationId": "NOTIF-00015",
+    "userId": "USR-2026-0003",
+    "title": "Reservation Request Submitted",
+    "message": "Your reservation request (RES-2026-0005) for \"Bosch Professional Circular Saw GKS 190\" has been submitted for Municipal Staff review.",
+    "type": "info",
+    "link": "",
+    "isRead": false,
+    "createdAt": "2026-10-10T09:44:16.557Z",
+    "updatedAt": "2026-10-10T09:44:16.557Z"
+  },
+  {
+    "notificationId": "NOTIF-00016",
+    "userId": "USR-2026-0003",
+    "title": "Reservation Approved!",
+    "message": "Your reservation for \"Bosch Professional Circular Saw GKS 190\" has been APPROVED. Please proceed to payment to confirm pickup on 2026-11-01.",
+    "type": "success",
+    "link": "/payments?reservationId=RES-2026-0005",
+    "isRead": false,
+    "createdAt": "2026-10-10T09:44:16.730Z",
+    "updatedAt": "2026-10-10T09:44:16.730Z"
+  },
+  {
+    "notificationId": "NOTIF-00017",
+    "userId": "USR-2026-0003",
+    "title": "Payment Confirmed & Official Receipt Issued",
+    "message": "Your payment of ₱100.00 via GCash has been recorded (Official Receipt: OR-2026-275390).",
+    "type": "success",
+    "link": "/receipts/OR-2026-275390",
+    "isRead": false,
+    "createdAt": "2026-10-10T09:44:16.742Z",
+    "updatedAt": "2026-10-10T09:44:16.742Z"
+  },
+  {
+    "notificationId": "NOTIF-00018",
+    "userId": "USR-2026-0003",
+    "title": "Equipment Released - Active Rental",
+    "message": "You have successfully checked out \"Bosch Professional Circular Saw GKS 190\". Expected return due date is 2026-11-03. Please operate with safety gear.",
+    "type": "info",
+    "link": "",
+    "isRead": false,
+    "createdAt": "2026-10-10T09:44:16.761Z",
+    "updatedAt": "2026-10-10T09:44:16.761Z"
+  },
+  {
+    "notificationId": "NOTIF-00019",
+    "userId": "USR-2026-0003",
+    "title": "Equipment Return Processed",
+    "message": "Your return for \"Bosch Professional Circular Saw GKS 190\" has been validated and completed. Thank you for using Basco MCTEB! Please leave your feedback.",
+    "type": "success",
+    "link": "/feedback?rentalId=RNT-2026-0003",
+    "isRead": false,
+    "createdAt": "2026-10-10T09:44:16.773Z",
+    "updatedAt": "2026-10-10T09:44:16.773Z"
+  },
+  {
+    "notificationId": "NOTIF-00020",
+    "userId": "ALL",
+    "title": "Equipment Damage / Maintenance Report",
+    "message": "Issue reported on \"200A Portable Inverter Arc / TIG Welder\": Welding lead connection cable clamp loose. (Severity: Moderate)",
+    "type": "danger",
+    "link": "/maintenance?id=MNT-2026-0003",
+    "isRead": false,
+    "createdAt": "2026-10-10T09:44:16.788Z",
+    "updatedAt": "2026-10-10T09:44:16.788Z"
   }
 ]
