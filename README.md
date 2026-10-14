@@ -19,13 +19,15 @@ The system is designed to support:
 ## Features
 
 - Equipment catalog and search flows
-- Equipment details and availability status
+- Equipment codes, category/availability/condition filters, and available-versus-total inventory on catalog cards
+- Equipment details, availability status, and in-stock reservation shortcuts
 - Reservation and rental management
 - User login and registration
 - Session-based authentication using cookies
 - Password hashing with bcrypt
 - Profile and account management
-- Notifications for user actions and system updates
+- Approval-based resident information update requests with reviewer and value-change audit history
+- Notification dropdown with unread indicators, mark-read actions, individual deletion, and clear-all controls
 - Dashboard with trends and summary cards
 - Maintenance tracking for tools and equipment
 - Review/feedback collection
@@ -76,7 +78,7 @@ MCTED_System/
 
 Before running the project, make sure you have the following installed:
 
-- Node.js 18 or later
+- Node.js 20 or later
 - npm or pnpm
 - Git
 
@@ -130,9 +132,21 @@ Optional variables you may use:
 ```bash
 PORT=3000
 NODE_ENV=development
+SMTP_HOST=smtp.example.com
+SMTP_PORT=587
+SMTP_USER=your-smtp-account
+SMTP_PASS=your-smtp-password
+SMTP_FROM=noreply@example.com
+STAFF_REGISTRATION_PASSCODE=choose-a-long-random-value
+ADMIN_REGISTRATION_PASSCODE=choose-another-long-random-value
 ```
 
-If you decide to add a `.env` loader later, store values in a file named `.env` in the project root.
+The app does not currently load `.env` files automatically. Set SMTP values in the process environment before starting the server. SMTP configuration is required for registration email verification and password reset codes; those flows report an error if mail delivery is unavailable. Do not commit SMTP credentials.
+
+Authentication uses random, HTTP-only session cookies backed by hashed tokens in the JSON database. Production deployments must use HTTPS (`NODE_ENV=production`) so cookies are marked Secure.
+Optional staff/administrator self-registration requires the respective passcode above; keep both codes private and do not reuse the SMTP password.
+First name, middle name, last name, birthday, barangay, house number, and street address are read-only on a resident profile. Residents can submit a reasoned update request, and municipal staff or administrators can approve or reject it; decisions and before/after values are recorded.
+Changing an account email requires a code delivered to the new address. Profile photos accept JPG, PNG, or WebP images up to 350 KB. Contact number updates remain disabled until an SMS/phone verification provider is configured.
 
 ## Frontend Setup
 

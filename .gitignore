@@ -1,0 +1,4 @@
+node_modules/
+db/data/auth_verifications.json
+db/data/sessions.json
+db/data/profile_change_requests.json

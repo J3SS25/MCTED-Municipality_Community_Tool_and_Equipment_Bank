@@ -39,7 +39,7 @@
 
         <div class="auth-options-row">
           <label class="remember-me">
-            <input type="checkbox" id="remember-me" checked>
+            <input type="checkbox" id="remember-me">
             <span>Remember me</span>
           </label>
           <button type="button" class="text-link" onclick="App.switchAuthTab('forgot')">Forgot password?</button>
@@ -118,13 +118,13 @@
 
         <div class="form-group" id="verification-code-wrap" style="display: none;">
           <label class="form-label">Verification Code</label>
-          <input type="text" id="reg-email-code" class="form-control" placeholder="Enter 6-digit code sent to your email">
+          <input type="text" id="reg-email-code" class="form-control" placeholder="Enter 6-digit code sent to your email" inputmode="numeric" autocomplete="one-time-code" maxlength="6">
         </div>
 
         <div class="form-group">
           <label class="form-label">Password *</label>
           <div class="password-field">
-            <input type="password" id="reg-password" class="form-control" minlength="6" required>
+            <input type="password" id="reg-password" class="form-control" minlength="8" autocomplete="new-password" required>
             <button type="button" class="toggle-password-btn" data-target="reg-password" aria-label="Show password">👁</button>
           </div>
           <div class="password-meter-wrap">
@@ -158,10 +158,15 @@
           <label class="form-label">Registered Email</label>
           <input type="email" id="forgot-email" class="form-control" placeholder="user@basco.gov.ph" required>
         </div>
-        <div class="form-group" id="forgot-pass-wrap">
+        <button type="button" id="forgot-send-code-btn" class="btn btn-outline btn-block" onclick="App.sendPasswordResetCode()">Send reset code</button>
+        <div class="form-group" id="forgot-code-wrap" style="display: none;">
+          <label class="form-label">Email Verification Code</label>
+          <input type="text" id="forgot-code" class="form-control" placeholder="Enter 6-digit code" inputmode="numeric" autocomplete="one-time-code" maxlength="6">
+        </div>
+        <div class="form-group" id="forgot-pass-wrap" style="display: none;">
           <label class="form-label">New Password</label>
           <div class="password-field">
-            <input type="password" id="forgot-newpass" class="form-control" placeholder="New strong password">
+            <input type="password" id="forgot-newpass" class="form-control" placeholder="New strong password" minlength="8" autocomplete="new-password">
             <button type="button" class="toggle-password-btn" data-target="forgot-newpass" aria-label="Show password">👁</button>
           </div>
           <div class="password-meter-wrap">
@@ -169,7 +174,7 @@
             <small id="forgot-password-strength" class="password-strength-text">Strength: Not started</small>
           </div>
         </div>
-        <button type="submit" id="forgot-submit-btn" class="btn btn-primary btn-block" style="margin-top: 1rem;">
+        <button type="submit" id="forgot-submit-btn" class="btn btn-primary btn-block" style="margin-top: 1rem; display: none;">
           Reset Password &rarr;
         </button>
       </form>
@@ -193,7 +198,7 @@
 
       <nav class="sidebar-nav">
         <div class="nav-group-title">MAIN MENU</div>
-        <a class="nav-link active" onclick="App.navigateTo('dashboard')">
+        <a class="nav-link active authenticated-only" onclick="App.navigateTo('dashboard')">
           <span class="nav-icon">📊</span>
           <span>Dashboard</span>
         </a>
@@ -201,16 +206,16 @@
           <span class="nav-icon">🛠️</span>
           <span>Tool Catalog</span>
         </a>
-        <a class="nav-link" onclick="App.navigateTo('reservations')">
+        <a class="nav-link authenticated-only" onclick="App.navigateTo('reservations')">
           <span class="nav-icon">📅</span>
           <span>Reservations</span>
           <span class="nav-badge" id="badge-pending-reservations" style="display: none;">0</span>
         </a>
-        <a class="nav-link" onclick="App.navigateTo('rentals')">
+        <a class="nav-link authenticated-only" onclick="App.navigateTo('rentals')">
           <span class="nav-icon">🔄</span>
           <span>Rentals &amp; Returns</span>
         </a>
-        <a class="nav-link" onclick="App.navigateTo('payments')">
+        <a class="nav-link authenticated-only" onclick="App.navigateTo('payments')">
           <span class="nav-icon">💳</span>
           <span>Payment Portal</span>
         </a>
@@ -228,13 +233,17 @@
           <span class="nav-icon">👥</span>
           <span>User Directory</span>
         </a>
+        <a class="nav-link staff-only" onclick="App.navigateTo('profile-requests')" style="display: none;">
+          <span class="nav-icon">📝</span>
+          <span>Information Requests</span>
+        </a>
 
         <div class="nav-group-title">COMMUNITY &amp; SETTINGS</div>
-        <a class="nav-link" onclick="App.navigateTo('feedback')">
+        <a class="nav-link authenticated-only" onclick="App.navigateTo('feedback')">
           <span class="nav-icon">⭐</span>
           <span>Community Reviews</span>
         </a>
-        <a class="nav-link" onclick="App.navigateTo('profile')">
+        <a class="nav-link authenticated-only" onclick="App.navigateTo('profile')">
           <span class="nav-icon">👤</span>
           <span>My Profile</span>
         </a>
@@ -248,8 +257,8 @@
             <span class="user-role-badge" id="sidebar-user-role">Borrower</span>
           </div>
         </div>
-        <button onclick="App.handleLogout()" title="Logout" style="background:none; border:none; color:rgba(255,255,255,0.7); cursor:pointer; font-size:1.1rem;">
-          🚪
+        <button id="sidebar-logout-btn" class="sidebar-logout-btn" onclick="App.handleLogout()" title="Logout" aria-label="Logout">
+          <span aria-hidden="true">🚪</span><span id="sidebar-logout-label">Logout</span>
         </button>
       </div>
     </aside>
@@ -267,6 +276,11 @@
         </div>
 
         <div class="navbar-right">
+          <div id="guest-auth-actions" class="guest-auth-actions" style="display: none;">
+            <span>Browsing as guest</span>
+            <button class="btn btn-outline btn-sm" onclick="App.showAuth('login')">Log In</button>
+            <button class="btn btn-primary btn-sm" onclick="App.showAuth('register')">Create Account</button>
+          </div>
           <!-- Low Bandwidth Mode Button -->
           <button id="low-bw-btn" class="low-bw-btn" onclick="App.toggleLowBandwidth()" title="Toggle Low-Bandwidth Mode for fast island connectivity">
             <span>⚡ Low-Bandwidth</span>
@@ -282,7 +296,10 @@
             <div id="notif-dropdown" style="display: none; position: absolute; right: 0; top: 45px; width: 320px; background: #fff; border: 1px solid var(--border-color); border-radius: var(--radius-md); box-shadow: var(--shadow-lg); z-index: 1000; padding: 0.75rem;">
               <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem; margin-bottom: 0.5rem;">
                 <strong style="font-size: 0.85rem;">Notifications</strong>
-                <button onclick="App.markAllNotificationsRead()" class="btn btn-sm btn-outline" style="padding: 0.15rem 0.4rem; font-size: 0.65rem;">Mark all read</button>
+                <div style="display: flex; gap: 0.35rem;">
+                  <button onclick="App.markAllNotificationsRead()" class="btn btn-sm btn-outline" style="padding: 0.15rem 0.4rem; font-size: 0.65rem;">Mark all read</button>
+                  <button onclick="App.clearNotifications()" class="btn btn-sm btn-outline" style="padding: 0.15rem 0.4rem; font-size: 0.65rem;">Clear all</button>
+                </div>
               </div>
               <div id="notif-list-wrap" style="max-height: 280px; overflow-y: auto; font-size: 0.8rem;">
                 <!-- Filled via JS -->
@@ -531,6 +548,24 @@
                 <a href="/api/dashboard/export?format=json" class="btn btn-outline btn-sm">📥 Backup JSON</a>
                 <a href="/api/dashboard/export?format=sql" class="btn btn-secondary btn-sm">🗄️ Export MySQL SQL</a>
               </div>
+        </section>
+
+        <section id="view-profile-requests" class="app-view" style="display:none;">
+              <div class="card">
+                <div class="card-header">
+                  <div class="card-title">📝 Resident Information Update Requests</div>
+                </div>
+                <div class="table-responsive">
+                  <table class="table">
+                    <thead>
+                      <tr><th>Resident</th><th>Field</th><th>Requested Value</th><th>Reason / Notes</th><th>Requested</th><th>Status</th><th>Review</th></tr>
+                    </thead>
+                    <tbody id="profile-change-requests-tbody">
+                      <tr><td colspan="7" style="text-align:center;color:var(--text-muted);">No requests loaded.</td></tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
             </div>
             <div class="table-responsive">
               <table class="table">
@@ -568,81 +603,103 @@
 
         <!-- 10. PROFILE VIEW -->
         <section id="view-profile" class="app-view" style="display: none;">
-          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+          <div class="profile-grid">
             <div class="card">
               <div class="card-header">
-                <div class="card-title">👤 Resident Profile Information</div>
+                <div class="card-title">👤 Official Personal Information</div>
               </div>
-              <form onsubmit="App.handleUpdateProfile(event)">
-                <div class="form-grid-2">
-                  <div class="form-group">
-                    <label class="form-label">First Name</label>
-                    <input type="text" id="prof-firstName" class="form-control" required>
-                  </div>
-                  <div class="form-group">
-                    <label class="form-label">Middle Name</label>
-                    <input type="text" id="prof-middleName" class="form-control">
-                  </div>
+              <dl class="profile-information-list">
+                <div><dt>First Name</dt><dd id="prof-firstName"></dd></div>
+                <div><dt>Middle Name</dt><dd id="prof-middleName"></dd></div>
+                <div><dt>Last Name</dt><dd id="prof-lastName"></dd></div>
+                <div><dt>Birthday</dt><dd id="prof-birthday"></dd></div>
+                <div><dt>Barangay</dt><dd id="prof-barangay"></dd></div>
+                <div><dt>House Number</dt><dd id="prof-houseNo"></dd></div>
+                <div><dt>Street Address</dt><dd id="prof-street"></dd></div>
+              </dl>
+              <p style="font-size:0.8rem;color:var(--text-muted);margin:0.75rem 0 1rem;">Official resident details can only be changed after municipal review.</p>
+              <form onsubmit="App.handleProfileChangeRequest(event)">
+                <div class="form-group">
+                  <label class="form-label" for="profile-change-field">Information to update</label>
+                  <select id="profile-change-field" class="form-select" onchange="App.updateProfileRequestValueField()" required>
+                    <option value="firstName">First Name</option>
+                    <option value="middleName">Middle Name</option>
+                    <option value="lastName">Last Name</option>
+                    <option value="birthday">Birthday</option>
+                    <option value="barangay">Barangay</option>
+                    <option value="houseNumber">House Number</option>
+                    <option value="street">Street Address</option>
+                  </select>
                 </div>
-
-                <div class="form-grid-2">
-                  <div class="form-group">
-                    <label class="form-label">Last Name</label>
-                    <input type="text" id="prof-lastName" class="form-control" required>
-                  </div>
-                  <div class="form-group">
-                    <label class="form-label">Birthday</label>
-                    <input type="date" id="prof-birthday" class="form-control" required>
-                  </div>
+                <div class="form-group">
+                  <label id="profile-change-value-label" class="form-label" for="profile-change-value">Requested value</label>
+                  <input type="text" id="profile-change-value" class="form-control" maxlength="200" required>
                 </div>
-
-                <div class="form-grid-2">
-                  <div class="form-group">
-                    <label class="form-label">Contact Number</label>
-                    <input type="tel" id="prof-contact" class="form-control" required>
-                  </div>
-                  <div class="form-group">
-                    <label class="form-label">Basco Barangay</label>
-                    <select id="prof-barangay" class="form-select" required>
-                      <option value="Ihuvok I (Kaychanarianan)">Ihuvok I (Kaychanarianan)</option>
-                      <option value="Ihuvok II (Kayvaluganan)">Ihuvok II (Kayvaluganan)</option>
-                      <option value="San Antonio">San Antonio</option>
-                      <option value="San Joaquin">San Joaquin</option>
-                      <option value="Chanarian">Chanarian</option>
-                      <option value="Kayhuvokan">Kayhuvokan</option>
-                    </select>
-                  </div>
+                <div class="form-group">
+                  <label class="form-label" for="profile-change-reason">Reason for change</label>
+                  <input type="text" id="profile-change-reason" class="form-control" maxlength="500" required>
                 </div>
-
-                <div class="form-grid-2">
-                  <div class="form-group">
-                    <label class="form-label">House No.</label>
-                    <input type="text" id="prof-houseNo" class="form-control" required>
-                  </div>
-                  <div class="form-group">
-                    <label class="form-label">Street Address</label>
-                    <input type="text" id="prof-street" class="form-control" required>
-                  </div>
+                <div class="form-group">
+                  <label class="form-label" for="profile-change-notes">Supporting notes</label>
+                  <textarea id="profile-change-notes" class="form-control" rows="3" maxlength="2000"></textarea>
                 </div>
-
-                <button type="submit" class="btn btn-primary btn-sm" style="margin-top: 0.5rem;">Save Changes</button>
+                <button type="submit" class="btn btn-primary btn-sm">Request Information Update</button>
               </form>
+              <div style="margin-top:1.25rem;">
+                <h4 style="margin-bottom:0.5rem;">My update requests</h4>
+                <div id="my-profile-change-requests" style="font-size:0.8rem;color:var(--text-muted);">Loading requests…</div>
+              </div>
             </div>
 
             <div class="card">
               <div class="card-header">
-                <div class="card-title">🔒 Change Account Password</div>
+                <div class="card-title">🔐 Account Settings</div>
               </div>
+              <dl class="profile-information-list">
+                <div><dt>Email Address</dt><dd id="prof-email"></dd></div>
+                <div><dt>Contact Number</dt><dd id="prof-contact"></dd></div>
+                <div><dt>Account Status</dt><dd id="prof-status"></dd></div>
+                <div><dt>User Role</dt><dd id="prof-role"></dd></div>
+                <div><dt>Member Since</dt><dd id="prof-member-since"></dd></div>
+                <div><dt>Last Login</dt><dd id="prof-last-login"></dd></div>
+              </dl>
+              <div class="profile-picture-settings">
+                <img id="profile-picture-preview" alt="Profile picture" style="display:none;">
+                <div>
+                  <label class="form-label" for="profile-picture-file">Profile Picture</label>
+                  <input type="file" id="profile-picture-file" class="form-control" accept="image/png,image/jpeg,image/webp" onchange="App.uploadProfilePicture(event)">
+                  <button type="button" id="remove-profile-picture-btn" class="btn btn-outline btn-sm" style="margin-top:0.5rem;display:none;" onclick="App.removeProfilePicture()">Remove Photo</button>
+                </div>
+              </div>
+              <form onsubmit="App.handleEmailChange(event)" style="margin-top:1rem;">
+                <div class="form-group">
+                  <label class="form-label" for="profile-new-email">Change Email Address</label>
+                  <div class="email-verification-row">
+                    <input type="email" id="profile-new-email" class="form-control" autocomplete="email" required>
+                    <button type="button" class="btn btn-outline btn-sm" onclick="App.sendEmailChangeCode()">Verify email</button>
+                  </div>
+                </div>
+                <div class="form-group" id="profile-email-code-wrap" style="display:none;">
+                  <label class="form-label" for="profile-email-code">Email Verification Code</label>
+                  <input type="text" id="profile-email-code" class="form-control" inputmode="numeric" autocomplete="one-time-code" maxlength="6">
+                </div>
+                <button id="profile-email-save-btn" type="submit" class="btn btn-primary btn-sm" style="display:none;">Save Verified Email</button>
+              </form>
+              <p style="font-size:0.75rem;color:var(--text-muted);margin:0.75rem 0;">Contact number changes are not enabled until a phone verification service is configured.</p>
               <form onsubmit="App.handleChangePassword(event)">
                 <div class="form-group">
-                  <label class="form-label">Current Password</label>
-                  <input type="password" id="pass-current" class="form-control" required>
+                  <label class="form-label" for="pass-current">Current Password</label>
+                  <input type="password" id="pass-current" class="form-control" autocomplete="current-password" required>
                 </div>
                 <div class="form-group">
-                  <label class="form-label">New Password</label>
-                  <input type="password" id="pass-new" class="form-control" minlength="6" required>
+                  <label class="form-label" for="pass-new">New Password</label>
+                  <input type="password" id="pass-new" class="form-control" minlength="8" autocomplete="new-password" required>
                 </div>
-                <button type="submit" class="btn btn-primary btn-sm" style="margin-top: 0.5rem;">Update Password</button>
+                <div class="password-meter-wrap">
+                  <div class="password-meter"><span id="profile-password-meter"></span></div>
+                  <small id="profile-password-strength" class="password-strength-text">Strength: Not started</small>
+                </div>
+                <button type="submit" class="btn btn-primary btn-sm" style="margin-top: 0.75rem;">Update Password</button>
               </form>
             </div>
           </div>

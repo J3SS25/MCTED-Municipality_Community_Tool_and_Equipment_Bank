@@ -1,34 +1,37 @@
 const userRepository = require('../repositories/userRepository');
+const sessionRepository = require('../repositories/sessionRepository');
 
 async function authMiddleware(req, res, next) {
   try {
-    // Check session cookie or Authorization header
-    let userId = req.cookies ? req.cookies.mcteb_session_user : null;
-    
-    if (!userId && req.headers.authorization) {
-      const parts = req.headers.authorization.split(' ');
-      if (parts.length === 2 && parts[0] === 'Bearer') {
-        userId = parts[1];
-      }
-    }
-
-    if (!userId) {
+    const token = req.cookies ? req.cookies.mcteb_session_user : null;
+    if (!token) {
       req.user = null;
+      req.session = null;
       return next();
     }
 
-    const user = await userRepository.getById(userId);
-    if (!user || user.status === 'Suspended') {
+    const session = await sessionRepository.getByToken(token);
+    if (!session || new Date(session.expiresAt) <= new Date()) {
+      if (session) await sessionRepository.delete(session.sessionId);
       req.user = null;
+      req.session = null;
+      return next();
+    }
+
+    const user = await userRepository.getById(session.userId);
+    if (!user || user.status === 'Suspended') {
+      await sessionRepository.delete(session.sessionId);
+      req.user = null;
+      req.session = null;
       return next();
     }
 
     req.user = user;
+    req.session = session;
     next();
   } catch (err) {
     console.error('Auth middleware error:', err);
-    req.user = null;
-    next();
+    next(err);
   }
 }
 

@@ -38,6 +38,12 @@ const API = {
       body: JSON.stringify(userData)
     });
   },
+  sendEmailVerification(email) {
+    return this.request('/auth/send-email-verification', {
+      method: 'POST',
+      body: JSON.stringify({ email })
+    });
+  },
   login(credentials) {
     return this.request('/auth/login', {
       method: 'POST',
@@ -54,6 +60,30 @@ const API = {
     return this.request('/auth/profile', {
       method: 'PUT',
       body: JSON.stringify(profileData)
+    });
+  },
+  sendEmailChangeVerification(email) {
+    return this.request('/auth/profile/email-verification', {
+      method: 'POST',
+      body: JSON.stringify({ email })
+    });
+  },
+  getMyProfileChangeRequests() {
+    return this.request('/auth/profile-change-requests/mine');
+  },
+  createProfileChangeRequest(requestData) {
+    return this.request('/auth/profile-change-requests', {
+      method: 'POST',
+      body: JSON.stringify(requestData)
+    });
+  },
+  getProfileChangeRequests() {
+    return this.request('/auth/profile-change-requests');
+  },
+  reviewProfileChangeRequest(requestId, decision) {
+    return this.request(`/auth/profile-change-requests/${requestId}`, {
+      method: 'PUT',
+      body: JSON.stringify(decision)
     });
   },
   changePassword(passwordData) {
@@ -238,6 +268,12 @@ const API = {
   },
   markAllNotificationsRead() {
     return this.request('/notifications/read-all', { method: 'PUT' });
+  },
+  deleteNotification(id) {
+    return this.request(`/notifications/${encodeURIComponent(id)}`, { method: 'DELETE' });
+  },
+  clearNotifications() {
+    return this.request('/notifications/my', { method: 'DELETE' });
   },
 
   // Dashboard & Exports

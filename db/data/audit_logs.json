@@ -406,5 +406,29 @@
     "ipAddress": "::1",
     "createdAt": "2026-10-10T12:01:31.754Z",
     "updatedAt": "2026-10-10T12:01:31.754Z"
+  },
+  {
+    "logId": "AUD-00035",
+    "userId": "USR-2026-0003",
+    "userName": "Nike Shoes",
+    "action": "USER_LOGIN",
+    "targetType": "User",
+    "targetId": "USR-2026-0003",
+    "details": "User borrower@basco.gov.ph logged in",
+    "ipAddress": "::1",
+    "createdAt": "2026-10-14T08:53:39.828Z",
+    "updatedAt": "2026-10-14T08:53:39.828Z"
+  },
+  {
+    "logId": "AUD-00036",
+    "userId": "USR-2026-0001",
+    "userName": "Althea Abad",
+    "action": "USER_LOGIN",
+    "targetType": "User",
+    "targetId": "USR-2026-0001",
+    "details": "User admin@basco.gov.ph logged in",
+    "ipAddress": "::1",
+    "createdAt": "2026-10-14T08:55:31.488Z",
+    "updatedAt": "2026-10-14T08:55:31.488Z"
   }
 ]

@@ -2,12 +2,21 @@ const db = require('../../db/database');
 
 class NotificationRepository {
   async getForUser(userId) {
-    let list = await db.find('notifications', n => n.userId === userId || n.userId === 'ALL');
-    return list.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+    const list = await db.find('notifications', n =>
+      (n.userId === userId || n.userId === 'ALL') && !(n.dismissedBy || []).includes(userId)
+    );
+    return list
+      .map(n => ({ ...n, isRead: n.isRead || (n.readBy || []).includes(userId) }))
+      .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
   }
 
   async getUnreadCount(userId) {
-    const list = await db.find('notifications', n => (n.userId === userId || n.userId === 'ALL') && !n.isRead);
+    const list = await db.find('notifications', n =>
+      (n.userId === userId || n.userId === 'ALL') &&
+      !(n.dismissedBy || []).includes(userId) &&
+      !n.isRead &&
+      !(n.readBy || []).includes(userId)
+    );
     return list.length;
   }
 
@@ -29,8 +38,14 @@ class NotificationRepository {
     return await db.insert('notifications', item);
   }
 
-  async markAsRead(notificationId) {
-    return await db.update('notifications', notificationId, { isRead: true }, 'notificationId');
+  async markAsRead(notificationId, userId) {
+    const notification = await db.findById('notifications', notificationId, 'notificationId');
+    if (!notification || (notification.userId !== userId && notification.userId !== 'ALL')) return false;
+
+    const updates = notification.userId === 'ALL'
+      ? { readBy: [...new Set([...(notification.readBy || []), userId])] }
+      : { isRead: true };
+    return Boolean(await db.update('notifications', notificationId, updates, 'notificationId'));
   }
 
   async markAllAsRead(userId) {
@@ -38,13 +53,34 @@ class NotificationRepository {
     let changed = false;
     for (const notif of notifications) {
       if ((notif.userId === userId || notif.userId === 'ALL') && !notif.isRead) {
-        notif.isRead = true;
+        if (notif.userId === 'ALL') {
+          notif.readBy = [...new Set([...(notif.readBy || []), userId])];
+        } else {
+          notif.isRead = true;
+        }
         notif.updatedAt = new Date().toISOString();
         changed = true;
       }
     }
     if (changed) {
       await db.save('notifications');
+    }
+    return true;
+  }
+
+  async deleteForUser(notificationId, userId) {
+    const notification = await db.findById('notifications', notificationId, 'notificationId');
+    if (!notification || (notification.userId !== userId && notification.userId !== 'ALL')) return false;
+    if (notification.userId !== 'ALL') return db.delete('notifications', notificationId, 'notificationId');
+
+    const dismissedBy = [...new Set([...(notification.dismissedBy || []), userId])];
+    return Boolean(await db.update('notifications', notificationId, { dismissedBy }, 'notificationId'));
+  }
+
+  async clearForUser(userId) {
+    const notifications = await db.find('notifications', n => n.userId === userId || n.userId === 'ALL');
+    for (const notification of notifications) {
+      await this.deleteForUser(notification.notificationId, userId);
     }
     return true;
   }

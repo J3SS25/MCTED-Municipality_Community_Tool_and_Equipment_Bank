@@ -5,6 +5,7 @@
 
 const App = {
   currentUser: null,
+  isGuestMode: false,
   currentView: 'dashboard',
   lowBandwidth: localStorage.getItem('mcteb_low_bandwidth') === 'true',
   selectedCategory: 'All',
@@ -14,6 +15,7 @@ const App = {
   // Init Application
   async init() {
     this.applyLowBandwidthState();
+    this.initializeAuthControls();
     try {
       this.metadata = await API.getMetadata();
     } catch (e) {
@@ -24,6 +26,7 @@ const App = {
       const meRes = await API.getMe();
       if (meRes.success && meRes.user) {
         this.currentUser = meRes.user;
+        this.isGuestMode = false;
         this.renderMainframe();
       } else {
         this.renderAuthScreen();
@@ -99,15 +102,18 @@ const App = {
     document.getElementById('auth-screen').style.display = 'none';
     document.getElementById('mainframe-screen').style.display = 'flex';
 
-    // Populate Sidebar User
+    this.renderSidebarUser();
     const user = this.currentUser;
-    document.getElementById('sidebar-user-name').textContent = `${user.firstName} ${user.lastName}`;
-    document.getElementById('sidebar-user-role').textContent = user.role;
-    document.getElementById('sidebar-user-avatar').textContent = user.firstName.charAt(0).toUpperCase();
+    document.getElementById('sidebar-logout-label').textContent = user ? 'Logout' : 'Log In';
+    document.getElementById('sidebar-logout-btn').title = user ? 'Logout' : 'Return to login';
+    document.getElementById('guest-auth-actions').style.display = user ? 'none' : 'flex';
+    document.querySelectorAll('.authenticated-only').forEach(el => {
+      el.style.display = user ? '' : 'none';
+    });
 
     // Role Visibility
-    const isStaffOrAdmin = user.role === 'Municipal Staff' || user.role === 'Administrator';
-    const isAdmin = user.role === 'Administrator';
+    const isStaffOrAdmin = user && (user.role === 'Municipal Staff' || user.role === 'Administrator');
+    const isAdmin = user && user.role === 'Administrator';
 
     document.querySelectorAll('.staff-only').forEach(el => {
       el.style.display = isStaffOrAdmin ? '' : 'none';
@@ -116,11 +122,97 @@ const App = {
       el.style.display = isAdmin ? '' : 'none';
     });
 
-    this.navigateTo(this.currentView || 'dashboard');
-    this.startNotificationPoller();
+    this.navigateTo(this.isGuestMode ? 'catalog' : (this.currentView || 'dashboard'));
+    if (user) this.startNotificationPoller();
+  },
+
+  renderSidebarUser() {
+    const user = this.currentUser;
+    document.getElementById('sidebar-user-name').textContent = user
+      ? `${user.firstName} ${user.lastName}`
+      : 'Guest';
+    document.getElementById('sidebar-user-role').textContent = user ? user.role : 'Public catalog access';
+    const avatar = document.getElementById('sidebar-user-avatar');
+    avatar.textContent = user ? user.firstName.charAt(0).toUpperCase() : 'G';
+    if (user && /^data:image\/(?:jpeg|png|webp);base64,/.test(user.avatar || '')) {
+      const image = document.createElement('img');
+      image.src = user.avatar;
+      image.alt = '';
+      image.className = 'avatar-image';
+      avatar.textContent = '';
+      avatar.appendChild(image);
+    }
   },
 
   // Auth Tabs & Form Handlers
+  showAuth(tab = 'login') {
+    this.currentUser = null;
+    this.isGuestMode = false;
+    document.getElementById('mainframe-screen').style.display = 'none';
+    this.renderAuthScreen();
+    this.switchAuthTab(tab);
+  },
+
+  enterGuestMode() {
+    this.currentUser = null;
+    this.isGuestMode = true;
+    this.currentView = 'catalog';
+    this.renderMainframe();
+  },
+
+  requireLogin() {
+    this.toast('Please login or create an account to continue.', 'warning');
+    this.showAuth('login');
+  },
+
+  initializeAuthControls() {
+    document.querySelectorAll('.toggle-password-btn').forEach(button => {
+      button.addEventListener('click', () => {
+        const input = document.getElementById(button.dataset.target);
+        if (!input) return;
+        const reveal = input.type === 'password';
+        input.type = reveal ? 'text' : 'password';
+        button.setAttribute('aria-label', reveal ? 'Hide password' : 'Show password');
+        button.textContent = reveal ? '🙈' : '👁';
+      });
+    });
+
+    [
+        ['reg-password', 'reg-password-meter', 'reg-password-strength'],
+        ['forgot-newpass', 'forgot-password-meter', 'forgot-password-strength'],
+        ['pass-new', 'profile-password-meter', 'profile-password-strength']
+    ].forEach(([inputId, meterId, textId]) => {
+      const input = document.getElementById(inputId);
+      if (input) input.addEventListener('input', () => this.updatePasswordStrength(input.value, meterId, textId));
+    });
+  },
+
+  updatePasswordStrength(password, meterId, textId) {
+    const meter = document.getElementById(meterId);
+    const text = document.getElementById(textId);
+    const checks = [
+      password.length >= 8,
+      /[a-z]/.test(password) && /[A-Z]/.test(password),
+      /\d/.test(password),
+      /[^A-Za-z0-9]/.test(password)
+    ];
+    const score = password ? checks.filter(Boolean).length : 0;
+    const labels = ['Not started', 'Weak', 'Fair', 'Good', 'Strong'];
+    meter.style.width = `${score * 25}%`;
+    meter.dataset.strength = labels[score].toLowerCase().replace(' ', '-');
+    text.textContent = `Strength: ${labels[score]}`;
+  },
+
+  escapeHTML(value) {
+    return String(value ?? '').replace(/[&<>"']/g, character => ({
+      '&': '&amp;',
+      '<': '&lt;',
+      '>': '&gt;',
+      '"': '&quot;',
+      "'": '&#39;'
+    })[character]);
+  },
+
   switchAuthTab(tab) {
     document.getElementById('tab-login-btn').classList.toggle('active', tab === 'login');
     document.getElementById('tab-register-btn').classList.toggle('active', tab === 'register');
@@ -144,11 +236,13 @@ const App = {
     event.preventDefault();
     const email = document.getElementById('login-email').value;
     const password = document.getElementById('login-password').value;
+    const rememberMe = document.getElementById('remember-me').checked;
 
     try {
-      const res = await API.login({ email, password });
+      const res = await API.login({ email, password, rememberMe });
       if (res.success) {
         this.currentUser = res.user;
+        this.isGuestMode = false;
         this.toast(res.message, 'success');
         this.renderMainframe();
       }
@@ -159,6 +253,16 @@ const App = {
 
   async handleRegister(event) {
     event.preventDefault();
+    const password = document.getElementById('reg-password').value;
+    const emailVerificationCode = document.getElementById('reg-email-code').value.trim();
+    if (!emailVerificationCode) {
+      this.toast('Verify your email address before creating your account.', 'warning');
+      return;
+    }
+    if (!this.isStrongPassword(password)) {
+      this.toast('Use at least 8 characters with uppercase, lowercase, a number, and a symbol.', 'warning');
+      return;
+    }
     const data = {
       firstName: document.getElementById('reg-firstName').value,
       middleName: document.getElementById('reg-middleName').value,
@@ -169,7 +273,8 @@ const App = {
       houseNumber: document.getElementById('reg-houseNo').value,
       street: document.getElementById('reg-street').value,
       email: document.getElementById('reg-email').value,
-      password: document.getElementById('reg-password').value,
+      password,
+      emailVerificationCode,
       role: document.getElementById('reg-role').value,
       adminPasscode: document.getElementById('reg-passcode').value
     };
@@ -178,6 +283,7 @@ const App = {
       const res = await API.register(data);
       if (res.success) {
         this.currentUser = res.user;
+        this.isGuestMode = false;
         this.toast(res.message, 'success');
         this.renderMainframe();
       }
@@ -189,38 +295,172 @@ const App = {
   async handleForgotPassword(event) {
     event.preventDefault();
     const email = document.getElementById('forgot-email').value;
-    const pin = document.getElementById('forgot-pin').value;
+    const verificationCode = document.getElementById('forgot-code').value.trim();
     const newPassword = document.getElementById('forgot-newpass').value;
 
+    if (!verificationCode) {
+      this.toast('Enter the verification code sent to your email.', 'warning');
+      return;
+    }
+    if (!this.isStrongPassword(newPassword)) {
+      this.toast('Use at least 8 characters with uppercase, lowercase, a number, and a symbol.', 'warning');
+      return;
+    }
     try {
-      const res = await API.forgotPassword({ email, recoveryPin: pin, newPassword });
-      if (res.requiresPin) {
-        document.getElementById('forgot-pin-wrap').style.display = 'block';
-        document.getElementById('forgot-pass-wrap').style.display = 'block';
-        document.getElementById('forgot-submit-btn').textContent = 'Confirm Reset & Update Password';
-        this.toast(res.hint || res.message, 'warning');
-      } else {
-        this.toast(res.message, 'success');
-        this.switchAuthTab('login');
-      }
+      const res = await API.forgotPassword({ email, verificationCode, newPassword });
+      this.toast(res.message, 'success');
+      this.switchAuthTab('login');
     } catch (err) {
       this.toast(err.message, 'danger');
     }
   },
 
+  async sendVerificationCode() {
+    const email = document.getElementById('reg-email').value.trim();
+    if (!email) {
+      document.getElementById('reg-email').focus();
+      this.toast('Enter your email address first.', 'warning');
+      return;
+    }
+    try {
+      const result = await API.sendEmailVerification(email);
+      document.getElementById('verification-code-wrap').style.display = 'block';
+      this.toast(result.message, 'success');
+    } catch (err) {
+      this.toast(err.message, 'danger');
+    }
+  },
+
+  async sendPasswordResetCode() {
+    const email = document.getElementById('forgot-email').value.trim();
+    if (!email) {
+      document.getElementById('forgot-email').focus();
+      this.toast('Enter your registered email address first.', 'warning');
+      return;
+    }
+    try {
+      const result = await API.forgotPassword({ email });
+      document.getElementById('forgot-code-wrap').style.display = 'block';
+      document.getElementById('forgot-pass-wrap').style.display = 'block';
+      document.getElementById('forgot-submit-btn').style.display = 'block';
+      this.toast(result.message, 'success');
+    } catch (err) {
+      this.toast(err.message, 'danger');
+    }
+  },
+
+  async sendEmailChangeCode() {
+    const email = document.getElementById('profile-new-email').value.trim();
+    if (!email) {
+      this.toast('Enter the new email address first.', 'warning');
+      return;
+    }
+    try {
+      const result = await API.sendEmailChangeVerification(email);
+      document.getElementById('profile-email-code-wrap').style.display = 'block';
+      document.getElementById('profile-email-save-btn').style.display = 'inline-flex';
+      this.toast(result.message, 'success');
+    } catch (err) {
+      this.toast(err.message, 'danger');
+    }
+  },
+
+  async handleEmailChange(event) {
+    event.preventDefault();
+    const email = document.getElementById('profile-new-email').value.trim();
+    const emailVerificationCode = document.getElementById('profile-email-code').value.trim();
+    if (!emailVerificationCode) {
+      this.toast('Verify the new email address before saving it.', 'warning');
+      return;
+    }
+    if (!window.confirm('Save this verified email address to your account?')) return;
+    try {
+      const result = await API.updateProfile({ email, emailVerificationCode });
+      this.currentUser = result.user;
+      document.getElementById('profile-new-email').value = '';
+      document.getElementById('profile-email-code').value = '';
+      document.getElementById('profile-email-code-wrap').style.display = 'none';
+      document.getElementById('profile-email-save-btn').style.display = 'none';
+      this.toast(result.message, 'success');
+      this.loadProfile();
+    } catch (err) {
+      this.toast(err.message, 'danger');
+    }
+  },
+
+  async uploadProfilePicture(event) {
+    const file = event.target.files && event.target.files[0];
+    if (!file) return;
+    if (!['image/jpeg', 'image/png', 'image/webp'].includes(file.type) || file.size > 350000) {
+      event.target.value = '';
+      this.toast('Choose a JPG, PNG, or WebP photo no larger than 350 KB.', 'warning');
+      return;
+    }
+
+    try {
+      const avatar = await new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = () => reject(new Error('Could not read the selected photo.'));
+        reader.readAsDataURL(file);
+      });
+      const result = await API.updateProfile({ avatar });
+      this.currentUser = result.user;
+      this.toast('Profile picture updated.', 'success');
+      this.renderSidebarUser();
+      this.loadProfile();
+    } catch (err) {
+      this.toast(err.message, 'danger');
+    } finally {
+      event.target.value = '';
+    }
+  },
+
+  async removeProfilePicture() {
+    if (!window.confirm('Remove your profile picture?')) return;
+    try {
+      const result = await API.updateProfile({ avatar: '' });
+      this.currentUser = result.user;
+      this.toast('Profile picture removed.', 'success');
+      this.renderSidebarUser();
+      this.loadProfile();
+    } catch (err) {
+      this.toast(err.message, 'danger');
+    }
+  },
+
+  isStrongPassword(password) {
+    return password.length >= 8
+      && /[a-z]/.test(password)
+      && /[A-Z]/.test(password)
+      && /\d/.test(password)
+      && /[^A-Za-z0-9]/.test(password);
+  },
+
   async handleLogout() {
+    if (!this.currentUser) {
+      this.showAuth('login');
+      return;
+    }
+    if (!window.confirm('Are you sure you want to log out?')) return;
+
     try {
       await API.logout();
       this.currentUser = null;
+      this.isGuestMode = false;
       this.toast('You have successfully logged out.', 'info');
       this.renderAuthScreen();
     } catch (err) {
-      this.renderAuthScreen();
+      this.toast(err.message, 'danger');
     }
   },
 
   // Navigation
   navigateTo(viewName) {
+    if (this.isGuestMode && viewName !== 'catalog') {
+      this.requireLogin();
+      return;
+    }
     this.currentView = viewName;
     document.querySelectorAll('.sidebar-nav .nav-link').forEach(link => {
       link.classList.remove('active');
@@ -247,6 +487,7 @@ const App = {
       inventory: { title: 'Municipal Inventory Manager', sub: 'Add, Edit, and Manage Community Equipment Records' },
       maintenance: { title: 'Maintenance & Damage Tracker', sub: 'Report Malfunctions & Track Municipal Motorpool Repairs' },
       users: { title: 'User & Staff Directory', sub: 'Manage Resident Accounts & Permissions' },
+      'profile-requests': { title: 'Information Update Requests', sub: 'Review requests to correct official resident information' },
       feedback: { title: 'Community Feedback & Reviews', sub: 'Equipment Ratings and Borrower Experience' },
       profile: { title: 'Resident Profile & Security', sub: 'Update Basco Address, Contact Information & Password' }
     };
@@ -266,6 +507,7 @@ const App = {
       case 'inventory': this.loadInventory(); break;
       case 'maintenance': this.loadMaintenance(); break;
       case 'users': this.loadUsers(); break;
+      case 'profile-requests': this.loadProfileChangeRequests(); break;
       case 'feedback': this.loadFeedback(); break;
       case 'profile': this.loadProfile(); break;
     }
@@ -431,6 +673,10 @@ const App = {
             <div class="tool-category-label">${t.category}</div>
             <h4 class="tool-card-title">${t.toolName}</h4>
             <div class="tool-card-specs">${t.description}</div>
+            <div class="tool-card-inventory-meta">
+              <span>Code: <strong>${t.toolId}</strong></span>
+              <span>Available: <strong>${t.quantityAvailable}</strong> / ${t.quantityTotal}</span>
+            </div>
             
             <div style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 0.5rem;">
               <span>⭐ ${t.avgRating || '5.0'} (${t.reviewCount || 0} reviews)</span> &bull; 
@@ -439,7 +685,10 @@ const App = {
 
             <div class="tool-meta-row">
               <div class="tool-fee">₱${parseFloat(t.rentalFee).toFixed(2)} <span>/ day</span></div>
-              <button onclick="App.viewToolDetails('${t.toolId}')" class="btn btn-outline btn-sm">View Details &rarr;</button>
+              <div class="tool-card-actions">
+                <button onclick="App.viewToolDetails('${t.toolId}')" class="btn btn-outline btn-sm">View Details</button>
+                <button onclick="App.reserveTool('${t.toolId}')" class="btn btn-primary btn-sm" ${t.availabilityStatus !== 'Available' || Number(t.quantityAvailable) <= 0 ? 'disabled' : ''}>Reserve Now</button>
+              </div>
             </div>
           </div>
         </div>
@@ -511,9 +760,32 @@ const App = {
   },
 
   triggerReservationFromDetails() {
+    if (!this.currentUser) {
+      this.requireLogin();
+      return;
+    }
     this.closeModal('modal-tool-details');
     if (!this.selectedToolForReservation) return;
     this.openReservationModal(this.selectedToolForReservation);
+  },
+
+  async reserveTool(toolId) {
+    if (!this.currentUser) {
+      this.requireLogin();
+      return;
+    }
+    try {
+      const result = await API.getToolById(toolId);
+      if (!result.success || !result.tool) throw new Error('Equipment details could not be loaded.');
+      if (result.tool.availabilityStatus !== 'Available' || Number(result.tool.quantityAvailable) <= 0) {
+        this.toast('This equipment is not currently available to reserve.', 'warning');
+        return;
+      }
+      this.selectedToolForReservation = result.tool;
+      this.openReservationModal(result.tool);
+    } catch (err) {
+      this.toast(err.message, 'danger');
+    }
   },
 
   // ==========================================
@@ -1229,6 +1501,58 @@ const App = {
     }
   },
 
+  async loadProfileChangeRequests() {
+    const tbody = document.getElementById('profile-change-requests-tbody');
+    if (!tbody) return;
+    try {
+      const res = await API.getProfileChangeRequests();
+      if (!res.success) throw new Error('Could not load profile update requests.');
+      if (!res.requests.length) {
+        tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:var(--text-muted);">No information update requests.</td></tr>';
+        return;
+      }
+      const labels = {
+        firstName: 'First Name',
+        middleName: 'Middle Name',
+        lastName: 'Last Name',
+        birthday: 'Birthday',
+        barangay: 'Barangay',
+        houseNumber: 'House Number',
+        street: 'Street Address'
+      };
+      tbody.innerHTML = res.requests.map(request => `
+        <tr>
+          <td>${this.escapeHTML(request.userName)} (${this.escapeHTML(request.userId)})</td>
+          <td>${labels[request.field] || this.escapeHTML(request.field)}</td>
+          <td>${this.escapeHTML(request.requestedValue)}</td>
+          <td>${this.escapeHTML(request.reason)}${request.notes ? `<br><small>${this.escapeHTML(request.notes)}</small>` : ''}</td>
+          <td>${new Date(request.createdAt).toLocaleString()}</td>
+          <td><span class="badge badge-${request.status.toLowerCase()}">${this.escapeHTML(request.status)}</span></td>
+          <td>${request.status === 'Pending' && request.userId !== this.currentUser.userId ? `
+            <button onclick="App.reviewProfileChangeRequest('${this.escapeHTML(request.requestId)}', 'Approved')" class="btn btn-sm btn-primary">Approve</button>
+            <button onclick="App.reviewProfileChangeRequest('${this.escapeHTML(request.requestId)}', 'Rejected')" class="btn btn-sm btn-danger">Reject</button>
+          ` : '—'}</td>
+        </tr>
+      `).join('');
+    } catch (err) {
+      tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:var(--danger);">Could not load update requests.</td></tr>';
+      this.toast(err.message, 'danger');
+    }
+  },
+
+  async reviewProfileChangeRequest(requestId, status) {
+    const reviewNotes = window.prompt(`Optional review notes for ${status.toLowerCase()}:`, '');
+    if (reviewNotes === null) return;
+    try {
+      const result = await API.reviewProfileChangeRequest(requestId, { status, reviewNotes });
+      this.toast(result.message, 'success');
+      this.loadProfileChangeRequests();
+      this.loadUsers();
+    } catch (err) {
+      this.toast(err.message, 'danger');
+    }
+  },
+
   // ==========================================
   // 9. COMMUNITY FEEDBACK
   // ==========================================
@@ -1294,39 +1618,96 @@ const App = {
   // ==========================================
   // 10. PROFILE & PASSWORD
   // ==========================================
-  loadProfile() {
+  async loadProfile() {
     if (!this.currentUser) return;
+    try {
+      const current = await API.getMe();
+      if (current.success) this.currentUser = current.user;
+    } catch (err) {
+      this.toast(err.message, 'danger');
+      return;
+    }
     const u = this.currentUser;
-    document.getElementById('prof-firstName').value = u.firstName || '';
-    document.getElementById('prof-middleName').value = u.middleName || '';
-    document.getElementById('prof-lastName').value = u.lastName || '';
-    document.getElementById('prof-birthday').value = u.birthday || '';
-    document.getElementById('prof-contact').value = u.contactNumber || '';
-    document.getElementById('prof-barangay').value = u.barangay || '';
-    document.getElementById('prof-houseNo').value = u.houseNumber || '';
-    document.getElementById('prof-street').value = u.street || '';
+    this.renderSidebarUser();
+    const profileValues = {
+      'prof-firstName': u.firstName,
+      'prof-middleName': u.middleName,
+      'prof-lastName': u.lastName,
+      'prof-birthday': u.birthday,
+      'prof-contact': u.contactNumber,
+      'prof-barangay': u.barangay,
+      'prof-houseNo': u.houseNumber,
+      'prof-street': u.street,
+      'prof-email': u.email,
+      'prof-status': u.status,
+      'prof-role': u.role,
+      'prof-member-since': u.createdAt ? new Date(u.createdAt).toLocaleDateString() : '—',
+      'prof-last-login': u.lastLoginAt ? new Date(u.lastLoginAt).toLocaleString() : 'Not recorded'
+    };
+    Object.entries(profileValues).forEach(([id, value]) => {
+      const element = document.getElementById(id);
+      if (element) element.textContent = value || '—';
+    });
+    const picture = document.getElementById('profile-picture-preview');
+    const removePictureButton = document.getElementById('remove-profile-picture-btn');
+    const hasPicture = /^data:image\/(?:jpeg|png|webp);base64,/.test(u.avatar || '');
+    picture.src = hasPicture ? u.avatar : '';
+    picture.style.display = hasPicture ? 'block' : 'none';
+    removePictureButton.style.display = hasPicture ? 'inline-flex' : 'none';
+
+    const requestList = document.getElementById('my-profile-change-requests');
+    try {
+      const res = await API.getMyProfileChangeRequests();
+      requestList.innerHTML = res.requests.length
+        ? res.requests.map(request => `
+          <div class="profile-request-item">
+            <strong>${this.escapeHTML(request.field)}: ${this.escapeHTML(request.requestedValue)}</strong>
+            <span class="badge badge-${request.status.toLowerCase()}">${this.escapeHTML(request.status)}</span>
+            <div>${this.escapeHTML(request.reason)}</div>
+            ${request.reviewNotes ? `<small>Review: ${this.escapeHTML(request.reviewNotes)}</small>` : ''}
+            <small>${new Date(request.createdAt).toLocaleString()}</small>
+          </div>
+        `).join('')
+        : 'No update requests submitted.';
+    } catch (err) {
+      requestList.textContent = err.message;
+    }
   },
 
-  async handleUpdateProfile(event) {
+  updateProfileRequestValueField() {
+    const field = document.getElementById('profile-change-field').value;
+    const input = document.getElementById('profile-change-value');
+    const label = document.getElementById('profile-change-value-label');
+    const labels = {
+      firstName: 'Requested first name',
+      middleName: 'Requested middle name',
+      lastName: 'Requested last name',
+      birthday: 'Requested birthday',
+      barangay: 'Requested barangay',
+      houseNumber: 'Requested house number',
+      street: 'Requested street address'
+    };
+    label.textContent = labels[field];
+    input.type = field === 'birthday' ? 'date' : 'text';
+    input.max = field === 'birthday' ? new Date().toISOString().slice(0, 10) : '';
+    input.value = '';
+  },
+
+  async handleProfileChangeRequest(event) {
     event.preventDefault();
-    const data = {
-      firstName: document.getElementById('prof-firstName').value,
-      middleName: document.getElementById('prof-middleName').value,
-      lastName: document.getElementById('prof-lastName').value,
-      birthday: document.getElementById('prof-birthday').value,
-      contactNumber: document.getElementById('prof-contact').value,
-      barangay: document.getElementById('prof-barangay').value,
-      houseNumber: document.getElementById('prof-houseNo').value,
-      street: document.getElementById('prof-street').value
+    const requestData = {
+      field: document.getElementById('profile-change-field').value,
+      requestedValue: document.getElementById('profile-change-value').value,
+      reason: document.getElementById('profile-change-reason').value,
+      notes: document.getElementById('profile-change-notes').value
     };
 
     try {
-      const res = await API.updateProfile(data);
-      if (res.success) {
-        this.currentUser = res.user;
-        this.toast(res.message, 'success');
-        this.renderMainframe();
-      }
+      const res = await API.createProfileChangeRequest(requestData);
+      this.toast(res.message, 'success');
+      event.target.reset();
+      this.updateProfileRequestValueField();
+      this.loadProfile();
     } catch (err) {
       this.toast(err.message, 'danger');
     }
@@ -1336,6 +1717,12 @@ const App = {
     event.preventDefault();
     const currentPassword = document.getElementById('pass-current').value;
     const newPassword = document.getElementById('pass-new').value;
+
+    if (!this.isStrongPassword(newPassword)) {
+      this.toast('Use at least 8 characters with uppercase, lowercase, a number, and a symbol.', 'warning');
+      return;
+    }
+    if (!window.confirm('Change your account password now?')) return;
 
     try {
       const res = await API.changePassword({ currentPassword, newPassword });
@@ -1377,13 +1764,17 @@ const App = {
 
       list.innerHTML = res.notifications.map(n => `
         <div style="padding: 0.5rem; border-bottom: 1px solid var(--border-color); background: ${n.isRead ? '#ffffff' : '#f0fdf4'}; border-radius: 4px; margin-bottom: 4px;">
-          <strong style="color: var(--primary-dark); font-size: 0.78rem;">${n.title}</strong>
-          <p style="font-size: 0.75rem; color: var(--text-main); margin: 2px 0;">${n.message}</p>
+          <strong style="color: var(--primary-dark); font-size: 0.78rem;">${this.escapeHTML(n.title)}</strong>
+          <p style="font-size: 0.75rem; color: var(--text-main); margin: 2px 0;">${this.escapeHTML(n.message)}</p>
           <div style="font-size: 0.65rem; color: var(--text-muted);">${new Date(n.createdAt).toLocaleTimeString()}</div>
+          <div style="display:flex; gap:0.4rem; margin-top:0.35rem;">
+            ${n.isRead ? '' : `<button onclick="App.markNotificationRead('${this.escapeHTML(n.notificationId)}')" class="btn btn-sm btn-outline">Mark read</button>`}
+            <button onclick="App.deleteNotification('${this.escapeHTML(n.notificationId)}')" class="btn btn-sm btn-outline">Delete</button>
+          </div>
         </div>
       `).join('');
     } catch (err) {
-      // silent fail in low bandwidth
+      this.toast(err.message, 'warning');
     }
   },
 
@@ -1393,8 +1784,40 @@ const App = {
   },
 
   async markAllNotificationsRead() {
-    await API.markAllNotificationsRead();
-    this.refreshNotifications();
+    try {
+      await API.markAllNotificationsRead();
+      await this.refreshNotifications();
+    } catch (err) {
+      this.toast(err.message, 'danger');
+    }
+  },
+
+  async markNotificationRead(id) {
+    try {
+      await API.markNotificationRead(id);
+      await this.refreshNotifications();
+    } catch (err) {
+      this.toast(err.message, 'danger');
+    }
+  },
+
+  async deleteNotification(id) {
+    try {
+      await API.deleteNotification(id);
+      await this.refreshNotifications();
+    } catch (err) {
+      this.toast(err.message, 'danger');
+    }
+  },
+
+  async clearNotifications() {
+    if (!window.confirm('Clear all of your notifications?')) return;
+    try {
+      await API.clearNotifications();
+      await this.refreshNotifications();
+    } catch (err) {
+      this.toast(err.message, 'danger');
+    }
   },
 
   // Modal helpers

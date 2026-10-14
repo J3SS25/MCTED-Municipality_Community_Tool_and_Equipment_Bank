@@ -22,7 +22,10 @@ class JsonDatabase {
       'maintenance',
       'feedback',
       'notifications',
-      'audit_logs'
+      'audit_logs',
+      'sessions',
+      'auth_verifications',
+      'profile_change_requests'
     ];
     this.init();
   }
