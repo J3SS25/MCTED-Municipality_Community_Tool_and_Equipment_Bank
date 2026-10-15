@@ -1,19 +1,32 @@
 // API Client for MCTEB System - Municipality of Basco, Batanes
 
+/** @typedef {import('../../types/contracts').ApiRequestOptions} ApiRequestOptions */
+/** @typedef {import('../../types/contracts').PaymentSubmission} PaymentSubmission */
+/** @typedef {import('../../types/contracts').PaymentSubmissionResponse} PaymentSubmissionResponse */
+
 const API = {
   baseUrl: '/api',
 
+  /** @param {string} endpoint @param {ApiRequestOptions} [options] */
   async request(endpoint, options = {}) {
     const url = `${this.baseUrl}${endpoint}`;
-    const headers = options.headers || {};
+    const headers = { ...options.headers };
+    /** @type {BodyInit | null | undefined} */
+    let body;
+    if (options.body instanceof FormData || typeof options.body === 'string') {
+      body = options.body;
+    } else if (options.body !== undefined && options.body !== null) {
+      body = JSON.stringify(options.body);
+    }
 
-    if (!(options.body instanceof FormData) && !headers['Content-Type']) {
+    if (!(body instanceof FormData) && !headers['Content-Type']) {
       headers['Content-Type'] = 'application/json';
     }
 
     try {
       const response = await fetch(url, {
         ...options,
+        body,
         headers
       });
 
@@ -90,12 +103,6 @@ const API = {
     return this.request('/auth/change-password', {
       method: 'PUT',
       body: JSON.stringify(passwordData)
-    });
-  },
-  forgotPassword(data) {
-    return this.request('/auth/forgot-password', {
-      method: 'POST',
-      body: JSON.stringify(data)
     });
   },
   getAllUsers() {
@@ -208,6 +215,7 @@ const API = {
   getReceipt(receiptId) {
     return this.request(`/payments/receipt/${receiptId}`);
   },
+  /** @param {PaymentSubmission} formData @returns {Promise<PaymentSubmissionResponse>} */
   submitPayment(formData) {
     return this.request('/payments', {
       method: 'POST',

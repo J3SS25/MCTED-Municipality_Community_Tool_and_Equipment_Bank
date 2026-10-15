@@ -7,7 +7,7 @@ class NotificationRepository {
     );
     return list
       .map(n => ({ ...n, isRead: n.isRead || (n.readBy || []).includes(userId) }))
-      .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+      .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
   }
 
   async getUnreadCount(userId) {

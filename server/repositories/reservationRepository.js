@@ -15,7 +15,7 @@ class ReservationRepository {
     }
 
     // Sort by createdAt descending
-    return list.sort((a, b) => new Date(b.createdAt || b.reservationDate) - new Date(a.createdAt || a.reservationDate));
+    return list.sort((a, b) => new Date(b.createdAt || b.reservationDate).getTime() - new Date(a.createdAt || a.reservationDate).getTime());
   }
 
   async getById(reservationId) {

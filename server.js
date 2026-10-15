@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 const express = require('express');
 const path = require('path');
 const cookieParser = require('cookie-parser');
@@ -58,7 +60,6 @@ if (process.env.NODE_ENV !== 'test') {
     console.log(` MUNICIPAL COMMUNITY TOOL & EQUIPMENT BANK (MCTEB) `);
     console.log(` Municipality of Basco, Batanes                     `);
     console.log(` Server running at: http://localhost:${PORT}        `);
-    console.log(` Low-Bandwidth Optimized Mode: Enabled              `);
     console.log(`====================================================`);
   });
 }

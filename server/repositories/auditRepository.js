@@ -22,7 +22,7 @@ class AuditRepository {
 
   async getAll(limit = 100) {
     const list = await db.find('audit_logs');
-    return list.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)).slice(0, limit);
+    return list.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()).slice(0, limit);
   }
 }
 

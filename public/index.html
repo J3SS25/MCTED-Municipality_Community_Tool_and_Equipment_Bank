@@ -4,8 +4,13 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>MCTEB - Municipal Community Tool and Equipment Bank | Basco, Batanes</title>
+  <script>
+    document.documentElement.dataset.theme =
+      localStorage.getItem('mcteb_theme') === 'dark' ? 'dark' : 'light';
+  </script>
   <link rel="icon" type="image/svg+xml" href="/images/logo.svg">
   <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/tailwind.css">
 </head>
 <body>
   <!-- AUTHENTICATION SCREEN (Shown if not logged in) -->
@@ -19,8 +24,7 @@
 
       <div class="auth-tabs">
         <div class="auth-tab active" id="tab-login-btn" onclick="App.switchAuthTab('login')">Log In</div>
-        <div class="auth-tab" id="tab-register-btn" onclick="App.switchAuthTab('register')">Create Account</div>
-        <div class="auth-tab" id="tab-forgot-btn" onclick="App.switchAuthTab('forgot')">Forgot Password</div>
+        <div class="auth-tab" id="tab-register-btn" onclick="App.switchAuthTab('register')">Sign In (Register)</div>
       </div>
 
       <!-- Login Form -->
@@ -42,7 +46,6 @@
             <input type="checkbox" id="remember-me">
             <span>Remember me</span>
           </label>
-          <button type="button" class="text-link" onclick="App.switchAuthTab('forgot')">Forgot password?</button>
         </div>
 
         <button type="submit" class="btn btn-primary btn-block" style="margin-top: 1rem;">
@@ -152,32 +155,6 @@
         </button>
       </form>
 
-      <!-- Forgot Password Form -->
-      <form id="form-forgot" style="display: none;" onsubmit="App.handleForgotPassword(event)">
-        <div class="form-group">
-          <label class="form-label">Registered Email</label>
-          <input type="email" id="forgot-email" class="form-control" placeholder="user@basco.gov.ph" required>
-        </div>
-        <button type="button" id="forgot-send-code-btn" class="btn btn-outline btn-block" onclick="App.sendPasswordResetCode()">Send reset code</button>
-        <div class="form-group" id="forgot-code-wrap" style="display: none;">
-          <label class="form-label">Email Verification Code</label>
-          <input type="text" id="forgot-code" class="form-control" placeholder="Enter 6-digit code" inputmode="numeric" autocomplete="one-time-code" maxlength="6">
-        </div>
-        <div class="form-group" id="forgot-pass-wrap" style="display: none;">
-          <label class="form-label">New Password</label>
-          <div class="password-field">
-            <input type="password" id="forgot-newpass" class="form-control" placeholder="New strong password" minlength="8" autocomplete="new-password">
-            <button type="button" class="toggle-password-btn" data-target="forgot-newpass" aria-label="Show password">👁</button>
-          </div>
-          <div class="password-meter-wrap">
-            <div class="password-meter"><span id="forgot-password-meter"></span></div>
-            <small id="forgot-password-strength" class="password-strength-text">Strength: Not started</small>
-          </div>
-        </div>
-        <button type="submit" id="forgot-submit-btn" class="btn btn-primary btn-block" style="margin-top: 1rem; display: none;">
-          Reset Password &rarr;
-        </button>
-      </form>
     </div>
   </div>
 
@@ -279,11 +256,11 @@
           <div id="guest-auth-actions" class="guest-auth-actions" style="display: none;">
             <span>Browsing as guest</span>
             <button class="btn btn-outline btn-sm" onclick="App.showAuth('login')">Log In</button>
-            <button class="btn btn-primary btn-sm" onclick="App.showAuth('register')">Create Account</button>
+            <button class="btn btn-primary btn-sm" onclick="App.showAuth('register')">Sign In (Register)</button>
           </div>
-          <!-- Low Bandwidth Mode Button -->
-          <button id="low-bw-btn" class="low-bw-btn" onclick="App.toggleLowBandwidth()" title="Toggle Low-Bandwidth Mode for fast island connectivity">
-            <span>⚡ Low-Bandwidth</span>
+          <button id="theme-toggle-btn" class="theme-toggle-btn" type="button" onclick="App.toggleTheme()" aria-label="Switch to dark mode" aria-pressed="false" title="Switch to dark mode">
+            <span id="theme-toggle-icon" aria-hidden="true">🌙</span>
+            <span class="sr-only">Toggle color theme</span>
           </button>
 
           <!-- Notifications Bell -->

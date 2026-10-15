@@ -10,14 +10,14 @@
     "rentalFee": 150,
     "depositFee": 300,
     "quantityTotal": 3,
-    "quantityAvailable": 3,
+    "quantityAvailable": 2,
     "imagePath": "/images/tools/power-tiller.svg",
     "serialNumber": "KB-PT-2025-081",
     "acquisitionDate": "2025-03-15",
-    "totalTimesBorrowed": 18,
+    "totalTimesBorrowed": 19,
     "isArchived": false,
     "createdAt": "2026-01-01T00:00:00.000Z",
-    "updatedAt": "2026-01-01T00:00:00.000Z"
+    "updatedAt": "2026-10-15T03:24:44.115Z"
   },
   {
     "toolId": "TL-AGR-002",
@@ -77,7 +77,7 @@
     "totalTimesBorrowed": 29,
     "isArchived": false,
     "createdAt": "2026-01-01T00:00:00.000Z",
-    "updatedAt": "2026-10-07T11:46:30.414Z"
+    "updatedAt": "2026-01-01T00:00:00.000Z"
   },
   {
     "toolId": "TL-CRP-001",
@@ -94,10 +94,10 @@
     "imagePath": "/images/tools/circular-saw.svg",
     "serialNumber": "BS-CS-2025-009",
     "acquisitionDate": "2025-02-14",
-    "totalTimesBorrowed": 33,
+    "totalTimesBorrowed": 31,
     "isArchived": false,
     "createdAt": "2026-01-01T00:00:00.000Z",
-    "updatedAt": "2026-10-10T09:44:16.770Z"
+    "updatedAt": "2026-01-01T00:00:00.000Z"
   },
   {
     "toolId": "TL-CNS-001",
@@ -157,7 +157,7 @@
     "totalTimesBorrowed": 27,
     "isArchived": false,
     "createdAt": "2026-01-01T00:00:00.000Z",
-    "updatedAt": "2026-10-10T09:44:16.797Z"
+    "updatedAt": "2026-01-01T00:00:00.000Z"
   },
   {
     "toolId": "TL-EMG-001",
@@ -198,5 +198,25 @@
     "isArchived": false,
     "createdAt": "2026-01-01T00:00:00.000Z",
     "updatedAt": "2026-01-01T00:00:00.000Z"
+  },
+  {
+    "toolId": "TL-AGR-011",
+    "toolName": "For renting shi",
+    "category": "Agricultural Tools",
+    "description": "Hoo Lee Sheet",
+    "specifications": "Good for shi",
+    "availabilityStatus": "Available",
+    "equipmentCondition": "Excellent",
+    "rentalFee": 5000,
+    "depositFee": 1000,
+    "quantityTotal": 1,
+    "quantityAvailable": 1,
+    "imagePath": "",
+    "serialNumber": "",
+    "acquisitionDate": "2026-10-15",
+    "totalTimesBorrowed": 0,
+    "isArchived": false,
+    "createdAt": "2026-10-15T02:41:02.041Z",
+    "updatedAt": "2026-10-15T02:41:02.041Z"
   }
 ]

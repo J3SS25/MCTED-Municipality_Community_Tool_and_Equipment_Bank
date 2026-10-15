@@ -14,7 +14,7 @@ class PaymentRepository {
       list = list.filter(p => p.paymentMethod === filters.paymentMethod);
     }
 
-    return list.sort((a, b) => new Date(b.paymentDate || b.createdAt) - new Date(a.paymentDate || a.createdAt));
+    return list.sort((a, b) => new Date(b.paymentDate || b.createdAt).getTime() - new Date(a.paymentDate || a.createdAt).getTime());
   }
 
   async getById(paymentId) {

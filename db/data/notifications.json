@@ -6,9 +6,9 @@
     "message": "Your reservation for \"Kubota 7HP Hand Tractor\" (RES-2026-0001) has been approved. Pickup date is Oct 10, 2026.",
     "type": "success",
     "link": "/reservations?id=RES-2026-0001",
-    "isRead": true,
+    "isRead": false,
     "createdAt": "2026-10-02T09:15:00.000Z",
-    "updatedAt": "2026-10-08T05:55:13.000Z"
+    "updatedAt": "2026-10-02T09:15:00.000Z"
   },
   {
     "notificationId": "NOTIF-00002",
@@ -23,200 +23,68 @@
   },
   {
     "notificationId": "NOTIF-00003",
-    "userId": "USR-2026-0005",
-    "title": "Welcome to Basco MCTEB!",
-    "message": "Hello Maria, your account (USR-2026-0005) has been successfully registered. You can now browse and reserve community tools and equipment.",
-    "type": "success",
-    "link": "",
+    "userId": "ALL",
+    "title": "New Equipment Reservation Request",
+    "message": "Althea Abad submitted a reservation for \"For renting shi\" (2026-10-16 to 2026-10-18).",
+    "type": "info",
+    "link": "/reservations?id=RES-2026-0003",
     "isRead": false,
-    "createdAt": "2026-10-07T11:00:32.741Z",
-    "updatedAt": "2026-10-07T11:00:32.741Z"
+    "createdAt": "2026-10-15T02:42:47.313Z",
+    "updatedAt": "2026-10-15T02:42:47.313Z"
   },
   {
     "notificationId": "NOTIF-00004",
-    "userId": "ALL",
-    "title": "New Equipment Reservation Request",
-    "message": "Juan Dita submitted a reservation for \"Bosch Professional Circular Saw GKS 190\" (2026-11-01 to 2026-11-03).",
+    "userId": "USR-2026-0001",
+    "title": "Reservation Request Submitted",
+    "message": "Your reservation request (RES-2026-0003) for \"For renting shi\" has been submitted for Municipal Staff review.",
     "type": "info",
-    "link": "/reservations?id=RES-2026-0003",
-    "isRead": true,
-    "createdAt": "2026-10-07T11:00:32.836Z",
-    "updatedAt": "2026-10-08T05:55:13.000Z"
+    "link": "",
+    "isRead": false,
+    "createdAt": "2026-10-15T02:42:47.318Z",
+    "updatedAt": "2026-10-15T02:42:47.318Z"
   },
   {
     "notificationId": "NOTIF-00005",
-    "userId": "USR-2026-0003",
-    "title": "Reservation Request Submitted",
-    "message": "Your reservation request (RES-2026-0003) for \"Bosch Professional Circular Saw GKS 190\" has been submitted for Municipal Staff review.",
+    "userId": "ALL",
+    "title": "New Equipment Reservation Request",
+    "message": "Althea Abad submitted a reservation for \"Kubota 7HP Hand Tractor / Power Tiller\" (2026-10-16 to 2026-10-18).",
     "type": "info",
-    "link": "",
-    "isRead": true,
-    "createdAt": "2026-10-07T11:00:32.838Z",
-    "updatedAt": "2026-10-08T05:55:13.000Z"
+    "link": "/reservations?id=RES-2026-0004",
+    "isRead": false,
+    "createdAt": "2026-10-15T02:43:16.304Z",
+    "updatedAt": "2026-10-15T02:43:16.304Z"
   },
   {
     "notificationId": "NOTIF-00006",
-    "userId": "USR-2026-0003",
-    "title": "Reservation Approved!",
-    "message": "Your reservation for \"Bosch Professional Circular Saw GKS 190\" has been APPROVED. Please proceed to payment to confirm pickup on 2026-11-01.",
-    "type": "success",
-    "link": "/payments?reservationId=RES-2026-0003",
-    "isRead": true,
-    "createdAt": "2026-10-07T11:00:32.926Z",
-    "updatedAt": "2026-10-08T05:55:13.000Z"
-  },
-  {
-    "notificationId": "NOTIF-00007",
-    "userId": "USR-2026-0003",
-    "title": "Payment Confirmed & Official Receipt Issued",
-    "message": "Your payment of ₱100.00 via GCash has been recorded (Official Receipt: OR-2026-146110).",
-    "type": "success",
-    "link": "/receipts/OR-2026-146110",
-    "isRead": true,
-    "createdAt": "2026-10-07T11:00:32.937Z",
-    "updatedAt": "2026-10-08T05:55:13.000Z"
-  },
-  {
-    "notificationId": "NOTIF-00008",
-    "userId": "USR-2026-0003",
-    "title": "Equipment Released - Active Rental",
-    "message": "You have successfully checked out \"Bosch Professional Circular Saw GKS 190\". Expected return due date is 2026-11-03. Please operate with safety gear.",
-    "type": "info",
-    "link": "",
-    "isRead": true,
-    "createdAt": "2026-10-07T11:00:32.950Z",
-    "updatedAt": "2026-10-08T05:55:13.000Z"
-  },
-  {
-    "notificationId": "NOTIF-00009",
-    "userId": "USR-2026-0003",
-    "title": "Equipment Return Processed",
-    "message": "Your return for \"Bosch Professional Circular Saw GKS 190\" has been validated and completed. Thank you for using Basco MCTEB! Please leave your feedback.",
-    "type": "success",
-    "link": "/feedback?rentalId=RNT-2026-0002",
-    "isRead": true,
-    "createdAt": "2026-10-07T11:00:32.960Z",
-    "updatedAt": "2026-10-08T05:55:13.000Z"
-  },
-  {
-    "notificationId": "NOTIF-00010",
-    "userId": "ALL",
-    "title": "Equipment Damage / Maintenance Report",
-    "message": "Issue reported on \"200A Portable Inverter Arc / TIG Welder\": Welding lead connection cable clamp loose. (Severity: Moderate)",
-    "type": "danger",
-    "link": "/maintenance?id=MNT-2026-0002",
-    "isRead": true,
-    "createdAt": "2026-10-07T11:00:32.970Z",
-    "updatedAt": "2026-10-08T05:55:13.000Z"
-  },
-  {
-    "notificationId": "NOTIF-00011",
-    "userId": "ALL",
-    "title": "New Equipment Reservation Request",
-    "message": "Juan Dita submitted a reservation for \"Kubota 7HP Hand Tractor / Power Tiller\" (2026-10-08 to 2026-10-10).",
-    "type": "info",
-    "link": "/reservations?id=RES-2026-0004",
-    "isRead": true,
-    "createdAt": "2026-10-07T11:39:22.325Z",
-    "updatedAt": "2026-10-08T05:55:13.000Z"
-  },
-  {
-    "notificationId": "NOTIF-00012",
-    "userId": "USR-2026-0003",
+    "userId": "USR-2026-0001",
     "title": "Reservation Request Submitted",
     "message": "Your reservation request (RES-2026-0004) for \"Kubota 7HP Hand Tractor / Power Tiller\" has been submitted for Municipal Staff review.",
     "type": "info",
     "link": "",
-    "isRead": true,
-    "createdAt": "2026-10-07T11:39:22.331Z",
-    "updatedAt": "2026-10-08T05:55:13.000Z"
-  },
-  {
-    "notificationId": "NOTIF-00013",
-    "userId": "USR-2026-0006",
-    "title": "Welcome to Basco MCTEB!",
-    "message": "Hello Maria, your account (USR-2026-0006) has been successfully registered. You can now browse and reserve community tools and equipment.",
-    "type": "success",
-    "link": "",
     "isRead": false,
-    "createdAt": "2026-10-10T09:44:16.341Z",
-    "updatedAt": "2026-10-10T09:44:16.341Z"
+    "createdAt": "2026-10-15T02:43:16.309Z",
+    "updatedAt": "2026-10-15T02:43:16.309Z"
   },
   {
-    "notificationId": "NOTIF-00014",
-    "userId": "ALL",
-    "title": "New Equipment Reservation Request",
-    "message": "Nike Shoes submitted a reservation for \"Bosch Professional Circular Saw GKS 190\" (2026-11-01 to 2026-11-03).",
-    "type": "info",
-    "link": "/reservations?id=RES-2026-0005",
-    "isRead": false,
-    "createdAt": "2026-10-10T09:44:16.553Z",
-    "updatedAt": "2026-10-10T09:44:16.553Z"
-  },
-  {
-    "notificationId": "NOTIF-00015",
-    "userId": "USR-2026-0003",
-    "title": "Reservation Request Submitted",
-    "message": "Your reservation request (RES-2026-0005) for \"Bosch Professional Circular Saw GKS 190\" has been submitted for Municipal Staff review.",
-    "type": "info",
-    "link": "",
-    "isRead": false,
-    "createdAt": "2026-10-10T09:44:16.557Z",
-    "updatedAt": "2026-10-10T09:44:16.557Z"
-  },
-  {
-    "notificationId": "NOTIF-00016",
-    "userId": "USR-2026-0003",
+    "notificationId": "NOTIF-00007",
+    "userId": "USR-2026-0001",
     "title": "Reservation Approved!",
-    "message": "Your reservation for \"Bosch Professional Circular Saw GKS 190\" has been APPROVED. Please proceed to payment to confirm pickup on 2026-11-01.",
+    "message": "Your reservation for \"Kubota 7HP Hand Tractor / Power Tiller\" has been APPROVED. Please proceed to payment to confirm pickup on 2026-10-16.",
     "type": "success",
-    "link": "/payments?reservationId=RES-2026-0005",
+    "link": "/payments?reservationId=RES-2026-0004",
     "isRead": false,
-    "createdAt": "2026-10-10T09:44:16.730Z",
-    "updatedAt": "2026-10-10T09:44:16.730Z"
+    "createdAt": "2026-10-15T03:23:11.201Z",
+    "updatedAt": "2026-10-15T03:23:11.201Z"
   },
   {
-    "notificationId": "NOTIF-00017",
-    "userId": "USR-2026-0003",
-    "title": "Payment Confirmed & Official Receipt Issued",
-    "message": "Your payment of ₱100.00 via GCash has been recorded (Official Receipt: OR-2026-275390).",
-    "type": "success",
-    "link": "/receipts/OR-2026-275390",
-    "isRead": false,
-    "createdAt": "2026-10-10T09:44:16.742Z",
-    "updatedAt": "2026-10-10T09:44:16.742Z"
-  },
-  {
-    "notificationId": "NOTIF-00018",
-    "userId": "USR-2026-0003",
+    "notificationId": "NOTIF-00008",
+    "userId": "USR-2026-0001",
     "title": "Equipment Released - Active Rental",
-    "message": "You have successfully checked out \"Bosch Professional Circular Saw GKS 190\". Expected return due date is 2026-11-03. Please operate with safety gear.",
+    "message": "You have successfully checked out \"Kubota 7HP Hand Tractor / Power Tiller\". Expected return due date is 2026-10-18. Please operate with safety gear.",
     "type": "info",
     "link": "",
     "isRead": false,
-    "createdAt": "2026-10-10T09:44:16.761Z",
-    "updatedAt": "2026-10-10T09:44:16.761Z"
-  },
-  {
-    "notificationId": "NOTIF-00019",
-    "userId": "USR-2026-0003",
-    "title": "Equipment Return Processed",
-    "message": "Your return for \"Bosch Professional Circular Saw GKS 190\" has been validated and completed. Thank you for using Basco MCTEB! Please leave your feedback.",
-    "type": "success",
-    "link": "/feedback?rentalId=RNT-2026-0003",
-    "isRead": false,
-    "createdAt": "2026-10-10T09:44:16.773Z",
-    "updatedAt": "2026-10-10T09:44:16.773Z"
-  },
-  {
-    "notificationId": "NOTIF-00020",
-    "userId": "ALL",
-    "title": "Equipment Damage / Maintenance Report",
-    "message": "Issue reported on \"200A Portable Inverter Arc / TIG Welder\": Welding lead connection cable clamp loose. (Severity: Moderate)",
-    "type": "danger",
-    "link": "/maintenance?id=MNT-2026-0003",
-    "isRead": false,
-    "createdAt": "2026-10-10T09:44:16.788Z",
-    "updatedAt": "2026-10-10T09:44:16.788Z"
+    "createdAt": "2026-10-15T03:24:44.119Z",
+    "updatedAt": "2026-10-15T03:24:44.119Z"
   }
 ]

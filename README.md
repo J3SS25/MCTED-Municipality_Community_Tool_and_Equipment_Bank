@@ -1,282 +1,171 @@
 # MCTED System
 
-MCTED (Municipal Community Tool and Equipment Donation/Bank System) is a lightweight web-based application for managing municipal equipment lending, reservations, rentals, maintenance, notifications, and user accounts.
+**Municipality Community Tool and Equipment Bank (MCTED)** is a web system that lets residents of the municipality browse, reserve, rent, and return community tools and equipment (farm tools, fishing equipment, carpentry, electrical, emergency gear, and more), while municipal staff manage inventory, payments, and maintenance.
 
-This project uses a Node.js + Express backend with a static frontend served from the `public` directory. The current data layer is a file-based JSON database under `db/data`, which makes local setup and testing simple without requiring a full database service.
-
-## Project Overview
-
-The system is designed to support:
-
-- Public browsing of equipment catalog items
-- User registration and authentication
-- Reservation and rental workflows
-- Maintenance and repair tracking
-- Notifications and dashboard summaries
-- User management and profile updates
-- Municipal access control and role-based behavior
+Built for a small community (Batanes), so it uses lightweight JSON file storage, runs on a single computer, and has a low-bandwidth mode for slow connections.
 
 ## Features
 
-- Equipment catalog and search flows
-- Equipment codes, category/availability/condition filters, and available-versus-total inventory on catalog cards
-- Equipment details, availability status, and in-stock reservation shortcuts
-- Reservation and rental management
-- User login and registration
-- Session-based authentication using cookies
-- Password hashing with bcrypt
-- Profile and account management
-- Approval-based resident information update requests with reviewer and value-change audit history
-- Notification dropdown with unread indicators, mark-read actions, individual deletion, and clear-all controls
-- Dashboard with trends and summary cards
-- Maintenance tracking for tools and equipment
-- Review/feedback collection
+- Tool catalog with categories, photos, condition, status, and daily rates
+- Reservations with date-conflict checking
+- Rentals and returns with condition logging, late fees, and damage fees
+- Payment portal with printable receipts
+- Inventory manager and maintenance/repair tracking
+- User directory and role-based access (Resident, Staff, Administrator)
+- Information update requests (residents ask the municipality to correct official data)
+- Community reviews and ratings
+- Notifications
+- Low-bandwidth mode and mobile-friendly layout
+- Persistent light/dark theme preference
 
-## Current Repository Structure
+## Technology Stack
+
+| Layer | Technology |
+|---|---|
+| Frontend | HTML, CSS, Tailwind CSS utilities, JavaScript |
+| Backend | Node.js (server.js) |
+| Data storage | JSON files in `db/data/` |
+| Language | JavaScript runtime with TypeScript checking and typed API contracts |
+| Tests | `tests/` folder |
+
+## Requirements
+
+- [Node.js](https://nodejs.org/) version 18 or newer
+- npm (comes with Node.js) or pnpm
+- A modern web browser (Chrome, Edge, Firefox, or a phone browser)
+- Git (optional, for cloning)
+
+Check your versions:
+
+```bash
+node -v
+npm -v
+```
+
+## How to Run
+
+1. **Get the project**
+
+   ```bash
+   git clone <your-repository-url>
+   cd MCTED_System
+   ```
+
+   Or download the ZIP, extract it, and open the `MCTED_System` folder in VS Code.
+
+2. **Install dependencies**
+
+   ```bash
+   npm install
+   ```
+
+3. **Configure the environment**
+
+   Copy `.env.example` to `.env` and set the SMTP host, user, password, and sender
+   for your email provider. Email verification will not send until valid SMTP
+   credentials are configured. The application currently stores records as JSON;
+   set `DB_DATA_DIR` only if you want to change the data directory.
+
+4. **Set up the data** (first time only, creates sample tools and the admin account)
+
+   ```bash
+   node db/seed.js
+   ```
+
+5. **Start the server**
+
+   ```bash
+   node server.js
+   ```
+
+6. **Open the system** in your browser:
+
+   ```
+   http://localhost:3000
+   ```
+
+To stop the server, press `Ctrl + C` in the terminal.
+
+## Default Accounts
+
+| Role | Email | Password |
+|---|---|---|
+| Administrator | admin@basco.gov.ph | *(set in db/seed.js)* |
+
+> Change all default passwords before using the system with real residents.
+
+## Using the System on a Phone (same Wi-Fi)
+
+1. Find the computer's local IP address (`ipconfig` on Windows, look for IPv4, e.g. `192.168.1.10`).
+2. On the phone, connected to the same Wi-Fi, open `http://192.168.1.10:3000`.
+3. If it does not load, allow Node.js through the Windows Firewall.
+
+## Tailwind CSS
+
+Existing site styling stays in `public/css/style.css`; Tailwind utilities are
+built separately with preflight disabled to preserve the existing design.
+Rebuild the utility stylesheet after changing Tailwind classes:
+
+```bash
+npm run build:css
+```
+
+Type-check the frontend API client and backend payment controller with:
+
+```bash
+npm run typecheck
+```
+
+## Running Tests
+
+```bash
+npm test
+```
+
+## Project Structure
 
 ```text
 MCTED_System/
 ├── db/
-│   ├── data/
-│   ├── database.js
-│   ├── schema.sql
-│   └── seed.js
+│   ├── data/            # JSON data files (users, tools, reservations, ...)
+│   ├── database.js      # Reads and writes the JSON files
+│   ├── schema.sql       # Reference schema for the data model
+│   └── seed.js          # Creates starting data
 ├── public/
 │   ├── css/
 │   ├── images/
 │   ├── js/
-│   ├── uploads/
+│   ├── uploads/         # Uploaded profile pictures and photos
 │   ├── index.html
 │   └── receipt-print.html
 ├── server/
 │   ├── config/
-│   ├── controllers/
-│   ├── middleware/
-│   ├── repositories/
-│   └── routes/
-├── .gitignore
-├── package.json
-├── package-lock.json
-├── pnpm-lock.yaml
-├── server.js
+│   ├── controllers/     # Request handling
+│   ├── middleware/      # Login and role checks
+│   ├── repositories/    # Data access
+│   └── routes/          # API routes
 ├── tests/
+├── types/               # Shared TypeScript contracts for API boundaries
+├── server.js            # Entry point
+├── package.json
 └── README.md
 ```
 
-## Technology Stack
+## Data and Backup
 
-- Node.js
-- Express.js
-- JavaScript
-- bcryptjs
-- cookie-parser
-- cors
-- multer
-- File-based JSON persistence under `db/data`
-
-## Prerequisites
-
-Before running the project, make sure you have the following installed:
-
-- Node.js 20 or later
-- npm or pnpm
-- Git
-
-## Installation
-
-1. Clone the repository:
-
-```bash
-git clone <repository-url>
-cd MCTED_System
-```
-
-2. Install dependencies:
-
-```bash
-npm install
-```
-
-If you prefer pnpm:
-
-```bash
-pnpm install
-```
-
-## Database Setup
-
-This project uses a JSON-based database implementation. No separate database server is required for local development.
-
-The database layer is initialized in:
-
-- `db/database.js`
-- `db/data/`
-
-The system automatically creates the required JSON files when it starts if they do not already exist.
-
-### Initial data
-
-If you want to seed initial records, you can review or run the scripts in:
-
-- `db/seed.js`
-- `db/schema.sql`
-
-For local development, the app is designed to create the data files automatically, so a manual database setup is usually unnecessary.
-
-## Environment Variables
-
-The current app is built for local development and does not require a `.env` file by default.
-
-Optional variables you may use:
-
-```bash
-PORT=3000
-NODE_ENV=development
-SMTP_HOST=smtp.example.com
-SMTP_PORT=587
-SMTP_USER=your-smtp-account
-SMTP_PASS=your-smtp-password
-SMTP_FROM=noreply@example.com
-STAFF_REGISTRATION_PASSCODE=choose-a-long-random-value
-ADMIN_REGISTRATION_PASSCODE=choose-another-long-random-value
-```
-
-The app does not currently load `.env` files automatically. Set SMTP values in the process environment before starting the server. SMTP configuration is required for registration email verification and password reset codes; those flows report an error if mail delivery is unavailable. Do not commit SMTP credentials.
-
-Authentication uses random, HTTP-only session cookies backed by hashed tokens in the JSON database. Production deployments must use HTTPS (`NODE_ENV=production`) so cookies are marked Secure.
-Optional staff/administrator self-registration requires the respective passcode above; keep both codes private and do not reuse the SMTP password.
-First name, middle name, last name, birthday, barangay, house number, and street address are read-only on a resident profile. Residents can submit a reasoned update request, and municipal staff or administrators can approve or reject it; decisions and before/after values are recorded.
-Changing an account email requires a code delivered to the new address. Profile photos accept JPG, PNG, or WebP images up to 350 KB. Contact number updates remain disabled until an SMS/phone verification provider is configured.
-
-## Frontend Setup
-
-The frontend is served as static files from `public/`.
-
-- Main entry page: `public/index.html`
-- Client-side logic: `public/js/`
-- Static assets: `public/images/` and `public/uploads/`
-- Styles: `public/css/`
-
-No separate frontend build step is required in the current version.
-
-## Backend Setup
-
-The backend is initialized in `server.js`.
-
-Key backend folders:
-
-- `server/controllers/` — request handlers
-- `server/routes/` — API route definitions
-- `server/middleware/` — authentication and request checks
-- `server/repositories/` — data access layer
-- `server/config/` — constants and app config
-
-## Running the System
-
-Start the server from the project root:
-
-```bash
-node server.js
-```
-
-The app will run at:
-
-```text
-http://localhost:3000
-```
-
-If you want to run in a different port:
-
-```bash
-PORT=4000 node server.js
-```
-
-## Build Instructions
-
-This project does not currently use a frontend build pipeline. The static frontend is served directly, so there is no separate build command required.
-
-If you make code changes, simply restart the Node server or reload the browser page.
-
-## Deployment Guide
-
-For a basic deployment:
-
-1. Ensure Node.js is installed on the target machine.
-2. Copy the project files to the server.
-3. Run:
-
-```bash
-npm install --production
-```
-
-4. Start the app:
-
-```bash
-NODE_ENV=production PORT=3000 node server.js
-```
-
-5. Configure reverse proxy settings if needed (Nginx or Apache).
-6. Make sure the app has permission to read/write the `db/data/` folder.
-
-For production, consider:
-
-- using a real database backend
-- adding environment-based secrets and configuration
-- enabling HTTPS
-- hardening cookie settings and session management
-- adding automated backups for the data directory
+- All records are stored in `db/data/`.
+- **Back up this folder regularly** (copy it to a USB drive or cloud storage).
+- Do not commit real resident data to Git. Keep `db/data/` listed in `.gitignore`.
 
 ## Troubleshooting
 
-### Port already in use
+| Problem | Fix |
+|---|---|
+| `Port 3000 is already in use` | Close the other program, or change the port in `server/config/` |
+| `Cannot find module` | Run `npm install` again |
+| Page shows no data | Run `node db/seed.js` |
+| Phone cannot connect | Check same Wi-Fi, and allow Node.js in the firewall |
 
-If port 3000 is already in use, either stop the other process or run the app on a different port:
+## Credits
 
-```bash
-PORT=4000 node server.js
-```
-
-### Missing or broken data files
-
-Ensure the `db/data/` directory exists and is writable:
-
-```bash
-mkdir -p db/data
-```
-
-### Dependencies not installing
-
-Delete the old install artifacts and reinstall:
-
-```bash
-rm -rf node_modules package-lock.json
-npm install
-```
-
-### App loads but features do not work
-
-Check the terminal logs for runtime errors. Common issues include:
-
-- malformed JSON in the data files
-- missing files in `db/data/`
-- invalid route or controller references
-- permissions problems on the data directory
-
-### Static files not loading
-
-Verify that the `public` folder and its subdirectories exist and that the `server.js` static path is pointing to the correct location.
-
-## Notes for Developers
-
-- The frontend is intentionally lightweight and is served as static HTML/CSS/JS.
-- Authentication is cookie-based and session-aware through Express middleware.
-- The data layer is simple and local, which is suitable for demos and small municipal deployments.
-- This project is currently structured as a minimal full-stack app without a strict frontend/backend separation at the filesystem level.
-
-## License
-
-This project currently uses the ISC license as indicated in `package.json`.
-
----
-
-This README is intended to help a new developer clone the project, install dependencies, configure the local data layer, and run the system without additional instructions.
+Developed for SIA 302 for the Municipality of Basco, Batanes.

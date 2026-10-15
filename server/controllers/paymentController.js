@@ -6,6 +6,8 @@ const notificationRepository = require('../repositories/notificationRepository')
 const auditRepository = require('../repositories/auditRepository');
 const constants = require('../config/constants');
 
+/** @typedef {import('../../types/contracts').PaymentSubmission} PaymentSubmission */
+
 class PaymentController {
   // Get all payments
   async getAll(req, res) {
@@ -136,6 +138,7 @@ class PaymentController {
   }
 
   // Submit payment (Borrower or Counter Staff)
+  /** @param {import('express').Request<{}, {}, PaymentSubmission>} req */
   async submitPayment(req, res) {
     try {
       const {
@@ -147,11 +150,17 @@ class PaymentController {
         notes
       } = req.body;
 
-      if (!toolId || !amount || !paymentMethod) {
+      const parsedAmount = Number(amount);
+      if (!toolId || !Number.isFinite(parsedAmount) || parsedAmount <= 0 || !paymentMethod) {
         return res.status(400).json({
           success: false,
-          message: 'Tool ID, amount, and payment method are required.'
+          message: 'A tool, a valid positive amount, and a payment method are required.'
         });
+      }
+
+      const tool = await toolRepository.getById(toolId);
+      if (!tool) {
+        return res.status(404).json({ success: false, message: 'Tool not found.' });
       }
 
       let proofImage = '';
@@ -161,13 +170,13 @@ class PaymentController {
 
       // If submitted by staff directly or cash at counter, can auto-verify or mark paid
       const isStaffOrAdmin = req.user.role === constants.USER_ROLES.STAFF || req.user.role === constants.USER_ROLES.ADMIN;
-      const initialStatus = isStaffOrAdmin ? constants.PAYMENT_STATUS.PAID : constants.PAYMENT_STATUS.PAID; // default instant mock gateway or pending
+      const initialStatus = constants.PAYMENT_STATUS.PAID;
 
       const payment = await paymentRepository.create({
         userId: req.user.userId,
         reservationId: reservationId || null,
         toolId,
-        amount: parseFloat(amount),
+        amount: parsedAmount,
         referenceNumber: referenceNumber || `REF-${Date.now()}`,
         paymentMethod,
         paymentStatus: initialStatus,
@@ -177,13 +186,11 @@ class PaymentController {
         notes: notes || ''
       });
 
-      const tool = await toolRepository.getById(toolId);
-
       // Notification
       await notificationRepository.create({
         userId: req.user.userId,
         title: 'Payment Confirmed & Official Receipt Issued',
-        message: `Your payment of ₱${parseFloat(amount).toFixed(2)} via ${paymentMethod} has been recorded (Official Receipt: ${payment.receiptId}).`,
+        message: `Your payment of ₱${parsedAmount.toFixed(2)} via ${paymentMethod} has been recorded (Official Receipt: ${payment.receiptId}).`,
         type: 'success',
         link: `/receipts/${payment.receiptId}`
       });

@@ -8,6 +8,7 @@ const App = {
   isGuestMode: false,
   currentView: 'dashboard',
   lowBandwidth: localStorage.getItem('mcteb_low_bandwidth') === 'true',
+  theme: localStorage.getItem('mcteb_theme') === 'dark' ? 'dark' : 'light',
   selectedCategory: 'All',
   metadata: null,
   cachedTools: [],
@@ -15,6 +16,7 @@ const App = {
   // Init Application
   async init() {
     this.applyLowBandwidthState();
+    this.applyTheme();
     this.initializeAuthControls();
     try {
       this.metadata = await API.getMetadata();
@@ -59,37 +61,31 @@ const App = {
     }, 4000);
   },
 
-  // Low Bandwidth Mode Toggle
-  toggleLowBandwidth() {
-    this.lowBandwidth = !this.lowBandwidth;
-    localStorage.setItem('mcteb_low_bandwidth', this.lowBandwidth);
-    this.applyLowBandwidthState();
-    this.toast(
-      this.lowBandwidth 
-        ? 'Low-Bandwidth Mode Enabled: Graphics minimized for fast island connection.' 
-        : 'Standard Visual Mode Enabled.',
-      'info'
-    );
-    if (this.currentView === 'catalog') {
-      this.loadCatalog();
+  applyLowBandwidthState() {
+    if (this.lowBandwidth) {
+      document.body.classList.add('low-bandwidth');
+    } else {
+      document.body.classList.remove('low-bandwidth');
     }
   },
 
-  applyLowBandwidthState() {
-    const btn = document.getElementById('low-bw-btn');
-    if (this.lowBandwidth) {
-      document.body.classList.add('low-bandwidth');
-      if (btn) {
-        btn.classList.add('active');
-        btn.innerHTML = '⚡ Low-Bandwidth (Active)';
-      }
-    } else {
-      document.body.classList.remove('low-bandwidth');
-      if (btn) {
-        btn.classList.remove('active');
-        btn.innerHTML = '⚡ Low-Bandwidth';
-      }
-    }
+  toggleTheme() {
+    this.theme = this.theme === 'dark' ? 'light' : 'dark';
+    localStorage.setItem('mcteb_theme', this.theme);
+    this.applyTheme();
+  },
+
+  applyTheme() {
+    document.documentElement.dataset.theme = this.theme;
+    const button = document.getElementById('theme-toggle-btn');
+    const icon = document.getElementById('theme-toggle-icon');
+    if (!button || !icon) return;
+
+    const nextTheme = this.theme === 'dark' ? 'light' : 'dark';
+    button.setAttribute('aria-label', `Switch to ${nextTheme} mode`);
+    button.setAttribute('title', `Switch to ${nextTheme} mode`);
+    button.setAttribute('aria-pressed', String(this.theme === 'dark'));
+    icon.textContent = this.theme === 'dark' ? '☀️' : '🌙';
   },
 
   // Screen Rendering
@@ -179,7 +175,6 @@ const App = {
 
     [
         ['reg-password', 'reg-password-meter', 'reg-password-strength'],
-        ['forgot-newpass', 'forgot-password-meter', 'forgot-password-strength'],
         ['pass-new', 'profile-password-meter', 'profile-password-strength']
     ].forEach(([inputId, meterId, textId]) => {
       const input = document.getElementById(inputId);
@@ -216,11 +211,9 @@ const App = {
   switchAuthTab(tab) {
     document.getElementById('tab-login-btn').classList.toggle('active', tab === 'login');
     document.getElementById('tab-register-btn').classList.toggle('active', tab === 'register');
-    document.getElementById('tab-forgot-btn').classList.toggle('active', tab === 'forgot');
 
     document.getElementById('form-login').style.display = tab === 'login' ? 'block' : 'none';
     document.getElementById('form-register').style.display = tab === 'register' ? 'block' : 'none';
-    document.getElementById('form-forgot').style.display = tab === 'forgot' ? 'block' : 'none';
   },
 
   togglePasscodeField(role) {
@@ -292,29 +285,6 @@ const App = {
     }
   },
 
-  async handleForgotPassword(event) {
-    event.preventDefault();
-    const email = document.getElementById('forgot-email').value;
-    const verificationCode = document.getElementById('forgot-code').value.trim();
-    const newPassword = document.getElementById('forgot-newpass').value;
-
-    if (!verificationCode) {
-      this.toast('Enter the verification code sent to your email.', 'warning');
-      return;
-    }
-    if (!this.isStrongPassword(newPassword)) {
-      this.toast('Use at least 8 characters with uppercase, lowercase, a number, and a symbol.', 'warning');
-      return;
-    }
-    try {
-      const res = await API.forgotPassword({ email, verificationCode, newPassword });
-      this.toast(res.message, 'success');
-      this.switchAuthTab('login');
-    } catch (err) {
-      this.toast(err.message, 'danger');
-    }
-  },
-
   async sendVerificationCode() {
     const email = document.getElementById('reg-email').value.trim();
     if (!email) {
@@ -325,24 +295,6 @@ const App = {
     try {
       const result = await API.sendEmailVerification(email);
       document.getElementById('verification-code-wrap').style.display = 'block';
-      this.toast(result.message, 'success');
-    } catch (err) {
-      this.toast(err.message, 'danger');
-    }
-  },
-
-  async sendPasswordResetCode() {
-    const email = document.getElementById('forgot-email').value.trim();
-    if (!email) {
-      document.getElementById('forgot-email').focus();
-      this.toast('Enter your registered email address first.', 'warning');
-      return;
-    }
-    try {
-      const result = await API.forgotPassword({ email });
-      document.getElementById('forgot-code-wrap').style.display = 'block';
-      document.getElementById('forgot-pass-wrap').style.display = 'block';
-      document.getElementById('forgot-submit-btn').style.display = 'block';
       this.toast(result.message, 'success');
     } catch (err) {
       this.toast(err.message, 'danger');
@@ -1132,10 +1084,12 @@ const App = {
 
   async handleSubmitPayment(event) {
     event.preventDefault();
+    const amount = Number(document.getElementById('pay-amount').value);
+    /** @type {import('../../types/contracts').PaymentSubmission} */
     const data = {
       reservationId: document.getElementById('pay-resId').value || null,
       toolId: document.getElementById('pay-toolId').value,
-      amount: document.getElementById('pay-amount').value,
+      amount,
       paymentMethod: document.getElementById('pay-method').value,
       referenceNumber: document.getElementById('pay-ref').value,
       notes: document.getElementById('pay-notes').value

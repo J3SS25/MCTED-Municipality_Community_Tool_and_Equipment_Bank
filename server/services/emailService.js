@@ -3,7 +3,7 @@ const nodemailer = require('nodemailer');
 function getTransporter() {
   const { SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS } = process.env;
   if (!SMTP_HOST || !SMTP_PORT || !SMTP_USER || !SMTP_PASS) {
-    throw new Error('Email delivery is not configured. Set SMTP_HOST, SMTP_PORT, SMTP_USER, and SMTP_PASS.');
+    throw new Error('Email delivery is not configured.');
   }
 
   return nodemailer.createTransport({

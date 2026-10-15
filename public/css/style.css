@@ -40,6 +40,24 @@
   --transition: all 0.2s ease-in-out;
 }
 
+html[data-theme="dark"] {
+  color-scheme: dark;
+  --primary-dark: #a4d5b7;
+  --primary-subtle: #163b28;
+  --bg-main: #111827;
+  --bg-card: #1f2937;
+  --bg-sidebar: #0b2116;
+  --text-main: #e5e7eb;
+  --text-muted: #9ca3af;
+  --text-light: #f8fafc;
+  --border-color: #374151;
+  --border-focus: #4ade80;
+}
+
+html[data-theme="light"] {
+  color-scheme: light;
+}
+
 /* Low Bandwidth Mode Optimization */
 body.low-bandwidth {
   --shadow-sm: none;
@@ -289,7 +307,7 @@ body {
 
 /* TOP NAVBAR */
 .top-navbar {
-  background-color: #ffffff;
+  background-color: var(--bg-card);
   border-bottom: 1px solid var(--border-color);
   padding: 0.75rem 1.5rem;
   display: flex;
@@ -332,7 +350,7 @@ body {
   gap: 0.75rem;
 }
 
-.low-bw-btn {
+.theme-toggle-btn {
   display: flex;
   align-items: center;
   gap: 0.4rem;
@@ -340,16 +358,14 @@ body {
   font-size: 0.75rem;
   font-weight: 600;
   border-radius: var(--radius-full);
-  background-color: #f1f5f9;
+  background-color: var(--bg-main);
   border: 1px solid var(--border-color);
   color: var(--text-main);
   cursor: pointer;
 }
 
-.low-bw-btn.active {
-  background-color: var(--secondary);
-  color: #000;
-  border-color: var(--secondary);
+.theme-toggle-btn:hover {
+  border-color: var(--primary);
 }
 
 .notif-bell-btn {
@@ -947,12 +963,43 @@ body {
 }
 
 .auth-card {
-  background: #ffffff;
+  background: var(--bg-card);
   border-radius: var(--radius-lg);
   width: 100%;
   max-width: 480px;
   padding: 2rem;
   box-shadow: var(--shadow-lg);
+}
+
+html[data-theme="dark"] .stat-card,
+html[data-theme="dark"] .form-control,
+html[data-theme="dark"] .form-select,
+html[data-theme="dark"] .category-pill,
+html[data-theme="dark"] .tool-card,
+html[data-theme="dark"] .modal-dialog,
+html[data-theme="dark"] .toast {
+  background-color: var(--bg-card);
+  color: var(--text-main);
+}
+
+html[data-theme="dark"] .modal-header,
+html[data-theme="dark"] .modal-footer,
+html[data-theme="dark"] .tool-card-image {
+  background-color: var(--bg-main);
+}
+
+html[data-theme="dark"] .official-receipt-box {
+  background-color: var(--bg-card);
+  color: var(--text-main);
+}
+
+html[data-theme="dark"] #notif-dropdown,
+html[data-theme="dark"] [style*="background: #ffffff"] {
+  background-color: var(--bg-card) !important;
+}
+
+html[data-theme="dark"] [style*="background: #f0fdf4"] {
+  background-color: var(--primary-subtle) !important;
 }
 
 .auth-header {

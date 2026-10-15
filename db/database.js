@@ -1,7 +1,9 @@
 const fs = require('fs');
 const path = require('path');
 
-const DATA_DIR = path.join(__dirname, 'data');
+require('dotenv').config();
+
+const DATA_DIR = path.resolve(process.env.DB_DATA_DIR || path.join(__dirname, 'data'));
 
 // Ensure data directory exists
 if (!fs.existsSync(DATA_DIR)) {
