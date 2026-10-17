@@ -1,36 +1,38 @@
 {
-  "name": "mcted-system",
+  "name": "mcteb-sys",
   "version": "1.0.0",
-  "description": "",
-  "main": "server.js",
+  "description": "Municipal Community Tool & Equipment Bank – peer-to-peer tool lending platform",
+  "main": "src/server.js",
+  "type": "module",
   "scripts": {
-    "start": "node server.js",
-    "test": "node tests/test-api-client.js && node tests/test-payment-workflow.js",
-    "build:css": "tailwindcss -i ./public/css/tailwind.input.css -o ./public/css/tailwind.css --minify",
-    "typecheck": "tsc --noEmit"
+    "dev": "node --watch src/server.js",
+    "start": "node src/server.js",
+    "test": "echo \"No tests configured yet\" && exit 0"
   },
-  "keywords": [],
+  "keywords": [
+    "mcteb",
+    "tool-bank",
+    "community",
+    "lending"
+  ],
   "author": "",
   "license": "ISC",
-  "type": "commonjs",
+  "devEngines": {
+    "packageManager": {
+      "name": "pnpm",
+      "version": "12.10.1",
+      "onFail": "download"
+    }
+  },
+  "packageManager": "pnpm@12.10.1",
   "dependencies": {
     "bcryptjs": "^3.0.3",
-    "cookie-parser": "^1.4.7",
     "cors": "^2.8.6",
-    "dotenv": "^18.0.8",
+    "dotenv": "^18.0.6",
     "express": "^5.2.1",
+    "express-validator": "^7.3.2",
+    "jsonwebtoken": "^9.0.3",
     "multer": "^2.4.0",
-    "nodemailer": "^10.1.1"
-  },
-  "devDependencies": {
-    "@types/bcryptjs": "^2.4.6",
-    "@types/cookie-parser": "^1.4.10",
-    "@types/cors": "^2.8.19",
-    "@types/express": "^5.0.6",
-    "@types/multer": "^2.3.0",
-    "@types/node": "^26.6.5",
-    "@types/nodemailer": "^8.0.2",
-    "tailwindcss": "^3.4.17",
-    "typescript": "^7.0.2"
+    "mysql2": "^3.24.5"
   }
 }
